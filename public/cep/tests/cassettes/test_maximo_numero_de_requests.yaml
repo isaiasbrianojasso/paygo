@@ -1,0 +1,184 @@
+interactions:
+- request:
+    body: tipoCriterio=T&captcha=c&tipoConsulta=1&fecha=08-11-2024&criterio=MIFELSPEI20241108102122835&emisor=40042&receptor=90723&cuenta=723969000011000077&monto=20912.98&receptorParticipante=0
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '184'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/75.0.3770.142 Safari/537.36
+    method: POST
+    uri: http://www.banxico.org.mx/cep-beta/valida.do
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - Keep-Alive
+      Content-Length:
+      - '0'
+      Location:
+      - https://www.banxico.org.mx/cep-beta/valida.do
+      Server:
+      - mxbanxico
+    status:
+      code: 307
+      message: Temporary Redirect
+- request:
+    body: tipoCriterio=T&captcha=c&tipoConsulta=1&fecha=08-11-2024&criterio=MIFELSPEI20241108102122835&emisor=40042&receptor=90723&cuenta=723969000011000077&monto=20912.98&receptorParticipante=0
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '184'
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/75.0.3770.142 Safari/537.36
+    method: POST
+    uri: https://www.banxico.org.mx/cep-beta/valida.do
+  response:
+    body:
+      string: "\r\n<div class=\"bg-banxico title-bar\">\r\n    <i class=\"icono-header
+        icon-warning3\"></i>\r\n    Error\r\n</div>\r\n<div id=\"#error_div\">\r\n
+        \   <div class=\"info\">\r\n        <p style=\"padding: 10px;max-width: 500px;
+        text-align: center;\">\r\n            La imagen de seguridad no fue ingresada
+        correctamente. Favor de validar.\r\n        </p>\r\n    </div>\r\n</div>\r\n<input
+        type=\"hidden\" name=\"varHideCaptcha\" value=\"false\"/>\r\n"
+    headers:
+      Content-Language:
+      - es-MX
+      Content-Length:
+      - '405'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Thu, 13 Feb 2025 16:25:42 GMT
+      Set-Cookie:
+      - JSESSIONID=AS4AIWMph2RKRjojRTF5_N4b9kfLwdMsncJqiQinT_752Vx2GS8B!-2094109768;
+        path=/; secure; HttpOnly
+      - Hex39764011=!hSRb/Oe+A9DmfVpFNVyFw/oTv40kxBHSz82QTZMRfFQU7+JaOgCgLcUPOjkXc1hbKgS3ZNHNYoGjsA==;
+        expires=Fri, 14-Feb-2025 00:25:42 GMT; path=/; Httponly
+      - 'TS012f422b=01ab44a5a8d9a8e09362eeb6005e191d30b6d416f9aff63b11604fa9565134550d619fba7e5f8bedcba4cab821a9c5faf9141f27f98c014cf50c8a72cb4c85d18a15f783b94c2e4bccfcb050806ecad51b8cd345f2;
+        Path=/; '
+      - TS604574e3027=083fd6a492ab2000497ab8b20a6d67fc875b408f70a7265878992e1c2f7efb0cb3077a452c6c728208561400b9113000e1352844986ca35e677b00c3773eacb5c72c53cdd2306241d334310be9e403b7a42f80355f376c9f787bc45252f5a395;
+        Path=/
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Cookie:
+      - Hex39764011=!hSRb/Oe+A9DmfVpFNVyFw/oTv40kxBHSz82QTZMRfFQU7+JaOgCgLcUPOjkXc1hbKgS3ZNHNYoGjsA==;
+        TS012f422b=01ab44a5a8d9a8e09362eeb6005e191d30b6d416f9aff63b11604fa9565134550d619fba7e5f8bedcba4cab821a9c5faf9141f27f98c014cf50c8a72cb4c85d18a15f783b94c2e4bccfcb050806ecad51b8cd345f2;
+        TS604574e3027=083fd6a492ab2000497ab8b20a6d67fc875b408f70a7265878992e1c2f7efb0cb3077a452c6c728208561400b9113000e1352844986ca35e677b00c3773eacb5c72c53cdd2306241d334310be9e403b7a42f80355f376c9f787bc45252f5a395
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/75.0.3770.142 Safari/537.36
+    method: GET
+    uri: http://www.banxico.org.mx/cep-beta/descarga.do?formato=XML
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - Keep-Alive
+      Content-Length:
+      - '0'
+      Location:
+      - https://www.banxico.org.mx/cep-beta/descarga.do?formato=XML
+      Server:
+      - mxbanxico
+    status:
+      code: 307
+      message: Temporary Redirect
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Cookie:
+      - JSESSIONID=AS4AIWMph2RKRjojRTF5_N4b9kfLwdMsncJqiQinT_752Vx2GS8B!-2094109768;
+        Hex39764011=!hSRb/Oe+A9DmfVpFNVyFw/oTv40kxBHSz82QTZMRfFQU7+JaOgCgLcUPOjkXc1hbKgS3ZNHNYoGjsA==;
+        TS012f422b=01ab44a5a8d9a8e09362eeb6005e191d30b6d416f9aff63b11604fa9565134550d619fba7e5f8bedcba4cab821a9c5faf9141f27f98c014cf50c8a72cb4c85d18a15f783b94c2e4bccfcb050806ecad51b8cd345f2;
+        TS604574e3027=083fd6a492ab2000497ab8b20a6d67fc875b408f70a7265878992e1c2f7efb0cb3077a452c6c728208561400b9113000e1352844986ca35e677b00c3773eacb5c72c53cdd2306241d334310be9e403b7a42f80355f376c9f787bc45252f5a395
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/75.0.3770.142 Safari/537.36
+    method: GET
+    uri: https://www.banxico.org.mx/cep-beta/descarga.do?formato=XML
+  response:
+    body:
+      string: "\n<!DOCTYPE html>\n<html lang=\"es\">\n    <head>\n        <meta http-equiv=\"Content-Type\"
+        content=\"text/html; charset=UTF-8\">\n        \n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no\"
+        />\n<meta charset=\"utf-8\" /> \n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=9;
+        IE=8; IE=7; IE=edge\" />\n<link rel=\"apple-touch-icon\" href=\"images/icon.png\"/>\n<link
+        rel=\"shortcut icon\" href=\"images/icon.png\">\n<!--Bootstrap-->\n<!--<link
+        href=\"//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css\"
+        rel=\"stylesheet\">\n<link rel=stylesheet href=\"css/bootstrap/bootstrap.min.css\"
+        type=\"text/css\">\n<link rel=\"stylesheet\" href=\"css/bootstrap/dataTables.bootstrap.min.css\"
+        type=\"text/css\" >-->\n<link rel=stylesheet href=\"css/fuentes.css\" type=\"text/css\">\n\n
+        \   <link rel=stylesheet href=\"css/cep-min.css\" type=\"text/css\">\n\n<!--
+        JQuery -->\n<script type=\"text/javascript\" src=\"js/jquery-3.6.1.min.js\"></script>\n<script
+        type=\"text/javascript\" src=\"js/jquery-ui.min.js\"></script>\n<script type=\"text/javascript\"
+        src=\"js/jquery/jquery.dataTables.min.js\"></script>\n<script type=\"text/javascript\"
+        src=\"js/datepicker-es.js\"></script>\n\n<!-- Validations -->\n<script type=\"text/javascript\"
+        src=\"js/validations/validateInput.js\"></script>\n<script type=\"text/javascript\"
+        src=\"js/validations/validateEvents.js\"></script>\n<script type=\"text/javascript\"
+        src=\"js/validations/validateWriting.js\"></script>\n<script type=\"text/javascript\"
+        src=\"js/validations/validationBussines.js\"></script>\n\n<!--Bootstrap-->\n<!--<script
+        src=\"js/bootstrap/bootstrap.min.js\"></script>-->\n<!--Bootbox Alert-->\n<!--<script
+        type=\"text/javascript\" src=\"js/bootstrap/bootbox.min.js\"></script>-->\n<!--Bootstrap
+        Tables-->\n<!--<script type=\"text/javascript\" src=\"js/bootstrap/dataTables.bootstrap.min.js\"></script>-->\n\n
+        \       <title>Comprobante Electr&oacute;nico de Pago</title>\n    </head>\n
+        \   <body>\n        <div id=\"pagewidth\" >\n            <div id=\"header\">\n
+        \               <div id=\"headermobile\"></div>\n            </div>\n            <div
+        id=\"appHead\"><span class=\"appName\">COMPROBANTE ELECTR&Oacute;NICO DE PAGO
+        (CEP)</span></div>\n            <div id=\"appMain\" style=\"text-align: center;\">\n
+        \               <h1>Lo sentimos, pero ha excedido el n&uacute;mero m&aacute;ximo
+        de consultas en este portal. Favor de intentar nuevamente m&aacute;s tarde.</h1>\n
+        \           </div>\n        </div>\n    </body>\n</html>\n"
+    headers:
+      Content-Language:
+      - es-MX
+      Content-Length:
+      - '2406'
+      Content-Type:
+      - text/html; charset=UTF-8
+      Date:
+      - Thu, 13 Feb 2025 16:25:43 GMT
+      Set-Cookie:
+      - Hex39764011=!AdDwggDFbRxADm9FNVyFw/oTv40kxF/a5FkbnH6T/KlLrJISuF4eZtPnA/tx0yFaA12snkkYuwg1fQ==;
+        expires=Fri, 14-Feb-2025 00:25:43 GMT; path=/; Httponly
+      - 'TS012f422b=01ab44a5a8fff85cbf9871020a39c5fcee17bd7cdbaff63b11604fa9565134550d619fba7e5f8bedcba4cab821a9c5faf9141f27f98c014cf50c8a72cb4c85d18a15f783b971711cce79568f9c3e8d321fa17ca017;
+        Path=/; '
+      - TS604574e3027=083fd6a492ab2000f93b94def09fda594000f13c8e94e403a7f9129a33b66c194b6a8ddc97066c7208e3378b3111300095cd17a15b9de6bac10528f84c16c63655b0a224e9521493dacdcad85b8c2b310948e49391f08b7e5ba8638ff349ab6f;
+        Path=/
+    status:
+      code: 200
+      message: OK
+version: 1

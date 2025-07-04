@@ -1,0 +1,38 @@
+Headers:
+HTTP/1.1 400 
+Server: Apple
+Date: Wed, 16 Apr 2025 06:31:29 GMT
+Content-Length: 0
+Connection: keep-alive
+X-Apple-I-Request-ID: 6e652080-1a8c-11f0-9865-395c62b2f629
+X-FRAME-OPTIONS: DENY
+X-Content-Type-Options: nosniff
+X-XSS-Protection: 1; mode=block
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Content-Security-Policy: default-src 'self' ; child-src blob: ; connect-src 'self' https://www.apple.com https://appleid.cdn-apple.com https://webcourier.sandbox.push.apple.com https://xp-qa.apple.com wss://websocket.push.apple.com ; font-src 'self' https://www.apple.com https://appleid.cdn-apple.com https://idmsa.apple.com https://gsa.apple.com https://idmsa.apple.com.cn https://signin.apple.com ; frame-src 'self' https://appleid.apple.com https://gsa.apple.com https://account.apple.com ; img-src 'self' https://www.apple.com https://appleid.cdn-apple.com https://*.mzstatic.com data: https://*.apple.com ; media-src data: ; object-src 'none' ; script-src 'self' https://www.apple.com https://appleid.cdn-apple.com https://idmsa.apple.com https://gsa.apple.com https://idmsa.apple.com.cn https://signin.apple.com ; style-src 'unsafe-inline' 'self' https://www.apple.com https://appleid.cdn-apple.com https://idmsa.apple.com https://gsa.apple.com https://idmsa.apple.com.cn https://signin.apple.com ;
+Referrer-Policy: origin
+X-BuildVersion: R8_2
+scnt: AAAA-kRBOTRCMUVEMTc4QTA4MzJERjA4RjFCQ0VBMDFERjdFOEY0MTUxQjM4MjNCNzQ5QTNFOUZBNkQ2Q0QxMkRCNDJCRjBEQ0M3ODYyNENCQ0I2NDY0QUM2NjZBN0VDNDlGRTdFQTgxNjA2MTU2M0JFRjE0NzJERUVCMzdDOTFBRDQ3QkUxQkRBQzcyMUQ3QTk4NDQ0OUNCQTg3ODZCQkJCNUJGMzczM0U3Qzk0OUQwNTVCMUY0NTEzQzA3RkM3MkIyQjYxODUwMjFGNDU3RERFRUI5NkUyNERENjlCQ0NFQ0EwODY0REVENEQyRURDNkU0NHwxAAABlj1ZYMyc4flkwHr0GpQB1mTyjfiUcw57qoDEQyJEOHIvYwR9pMFeFfE0CoxiAAFlnPmxihA4Jg0-ccPPO1edR-YKOWZnwuHh81b0pNh-nv_R43nPuw
+Set-Cookie: dslang=US-EN; Domain=apple.com; Path=/; Secure; HttpOnly
+Set-Cookie: site=USA; Domain=apple.com; Path=/; Secure; HttpOnly
+Pragma: no-cache
+Expires: Thu, 01 Jan 1970 00:00:00 GMT
+Cache-Control: no-cache
+Cache-Control: no-store
+Set-Cookie: aasp=DA94B1ED178A0832DF08F1BCEA01DF7E8F4151B3823B749A3E9FA6D6CD12DB42BF0DCC78624CBCB6464AC666A7EC49FE7EA816061563BEF1472DEEB37C91AD47BE1BDAC721D7A984449CBA8786BBBB5BF3733E7C949D055B1F4513C07FC72B2B6185021F457DDEEB96E24DD69BCCECA0864DED4D2EDC6E44; Domain=idmsa.apple.com; Path=/; Secure; HttpOnly
+vary: accept-encoding
+
+
+
+Body:
+{
+          "accountName": "",
+          "password": "Ostuacan2024@",
+          "rememberMe": false,
+          "skip2FA": false,
+          "trustTokens": [],
+         "m1"=>"s7GWxAaXZJFxkCPbkJvmiE0luvuc4Kiv5PC5wiXUAsI=",
+        "c"=>"d-4a4-efcbdbf0-959e-11ee-8def-71703adfa15f:RNO",
+        "m2"=>"9XhIzE19G2hKrHBaromYy32cyVQfQkGTnluwgJRS/RU=",
+          "pause2FA": false,
+        }

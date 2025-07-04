@@ -1,0 +1,95 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/75.0.3770.142 Safari/537.36
+    method: GET
+    uri: http://www.banxico.org.mx/cep-beta/no/existe
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - Keep-Alive
+      Content-Length:
+      - '0'
+      Location:
+      - https://www.banxico.org.mx/cep-beta/no/existe
+      Server:
+      - mxbanxico
+    status:
+      code: 307
+      message: Temporary Redirect
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/75.0.3770.142 Safari/537.36
+    method: GET
+    uri: https://www.banxico.org.mx/cep-beta/no/existe
+  response:
+    body:
+      string: ''
+    headers:
+      Connection:
+      - Keep-Alive
+      Content-Length:
+      - '0'
+      Location:
+      - https://anterior.banxico.org.mx/cep-beta/no/existe
+      Server:
+      - mxbanxico
+    status:
+      code: 302
+      message: Moved Temporarily
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML,
+        like Gecko) Chrome/75.0.3770.142 Safari/537.36
+    method: GET
+    uri: https://anterior.banxico.org.mx/cep-beta/no/existe
+  response:
+    body:
+      string: The resource you are looking for has been removed, had its name changed,
+        or is temporarily unavailable.
+    headers:
+      Content-Length:
+      - '103'
+      Content-Type:
+      - text/html
+      Date:
+      - Thu, 13 Feb 2025 16:29:05 GMT
+      Set-Cookie:
+      - TS27080ada027=083fd6a492ab2000b680ccb1da004b5b4fdaa8484afdb7be4f778f6c1b99695c85df7ec0db406647089836ce1e1130000f24c8692fcbf30a82791dd1a64a58930c0ee5d9bd2646eb613c5a9e383a5019333abdba92c2cf7c77f10a2b5a0f0e8a;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=480; preload
+      X-Robots-Tag:
+      - noindex, nofollow
+    status:
+      code: 404
+      message: Not Found
+version: 1

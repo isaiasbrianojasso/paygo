@@ -1,0 +1,56 @@
+{
+	"hollyv2": {
+		"type": "ftp",
+		"host": "alpha.hollyrenew.website",
+		"port": 21,
+		"username": "U2FsdGVkX18bdRlOZRpnrG8V9uJ7cMQNGwdn8fU7o0U=",
+		"password": "U2FsdGVkX1/9KdBuO8ox6OGrZ8QW1/HHjBpfNSiMAsc=",
+		"proxy": false,
+		"upload_on_save": true,
+		"watch": true,
+		"submit_git_before_upload": true,
+		"submit_git_msg": "",
+		"build": "",
+		"compress": false,
+		"remote_unpacked": false,
+		"delete_remote_compress": false,
+		"delete_local_compress": false,
+		"deleteRemote": false,
+		"upload_to_root": false,
+		"distPath": [],
+		"excludePath": [],
+		"downloadPath": "",
+		"downloadExcludePath": [],
+		"default": true,
+		"secretKeyPath": "/Users/joseisaiasbrianojasso/vscode_sync_tool/SMSv2/secret_key_hollyv2.txt"
+	}
+	// Configuración de referencia
+	// Nombre del entorno, admite nombres personalizados
+	// "test": { // Entorno de prueba
+	//     "type": "", // (Obligatorio) Tipo de conexión, valores opcionales: ftp, sftp, ssh
+	//     "host": "0.0.0.0", // (Obligatorio) Dirección del servidor
+	//     "port": 22, // (Opcional) Número de puerto, ftp por defecto 21, sftp, ssh por defecto 22
+	//     "username": "username", // (Obligatorio) Nombre de usuario
+	//     "password": "password", // Contraseña (o ruta de la clave privada, elegir uno)
+	//     // "privateKeyPath": "/your_path/id_rsa", //  (Configuración de sftp, ssh) Ruta de la clave privada (o contraseña, elegir uno), nota: es mejor no colocar la clave en el directorio del código
+	//     // "secretKeyPath": "/your_path/secret_key.txt", //  Ruta de la clave privada cifrada, utilizada para cifrar el nombre de usuario y la contraseña, nota: es mejor no colocar la clave en el directorio del código
+	//     "proxy": false, // Usar proxy, por defecto false
+	//     "upload_on_save": false, // Subir automáticamente después de guardar, recomendado para desarrollo individual, si upload_on_save es true, watch, submit_git_before_upload, compress, deleteRemote son inválidos, por defecto false
+	//     "watch": false, // Observar cambios en los archivos del directorio de subida, por defecto false, si upload_on_save es true, este ítem es inválido. Si se configura el directorio distPath, solo se observarán los cambios en los archivos dentro de distPath
+	//     "submit_git_before_upload": false, // Para desarrollo en equipo, confirmar cambios en git local antes de subir, para evitar sobrescribir el código remoto, por defecto false
+	//     "submit_git_msg": "", // Configuración del mensaje de confirmación de git, por defecto vacío. Si submit_git_before_upload es true y no se completa, se mostrará un cuadro de diálogo para ingresar manualmente
+	//     // "build": "yarn build:test", // (Opcional) Comando de construcción, si es un proyecto frontend, habilitar esta opción
+	//     "compress": false, //  Comprimir antes de subir y descomprimir en el servidor (la cuenta debe soportar ssh, el sistema detectará automáticamente si es compatible, si no, no se comprimirá), por defecto false
+	//     "remote_unpacked": true, // Descomprimir en el servidor después de subir, ssh por defecto true, otros por defecto false
+	//     "delete_remote_compress": true, // Eliminar archivo comprimido remoto después de subir, ssh por defecto true, otros por defecto false
+	//     "delete_local_compress": true, // Eliminar archivo comprimido local después de subir, por defecto true
+	//     "upload_to_root": false, // Si distPath tiene un solo directorio, subir a la raíz de remotePath, generalmente utilizado para implementar código frontend, por defecto false
+	//     "deleteRemote": false, // Eliminar directorio remoto distPath antes de subir, generalmente utilizado para limpiar código frontend implementado, por defecto false
+	//     "distPath": [], // (Opcional) Directorio local a subir, admite cadena o array, por defecto subir directorio raíz
+	//     "remotePath": "/www/wwwroot/test", // (Configuración de sftp, ssh) Dirección del servidor de subida
+	//     "excludePath": [], // (Opcional) Archivos y directorios excluidos en el entorno actual, se combinará con excludePath de la configuración del plugin, si el plugin usa gitignore, se combinará con el archivo .gitignore
+	//     "downloadPath": "", //  (Opcional) Ruta de descarga, por defecto directorio raíz del proyecto actual, utilizado para descargar manualmente archivos o carpetas, se puede especificar la dirección de descarga
+	//     "downloadExcludePath": [],//  (Opcional) Archivos y directorios excluidos en la descarga
+	//     "default": false // Si es el entorno por defecto, si es true, se puede usar el menú contextual para subir rápidamente archivos o carpetas, comparar archivos remotos, por defecto false
+	// }
+}
