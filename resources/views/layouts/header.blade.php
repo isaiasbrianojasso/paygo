@@ -32,7 +32,6 @@ $current = url()->current();
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Componente Blade si aplica -->
-    <x-javascript></x-javascript>
 
     <style>
         body,
@@ -58,7 +57,7 @@ $current = url()->current();
     </style>
 </head>
 
-<body class='pace-top '>
+<body class='pace-top ' oncontextmenu="return false;" onselectstart="return false;" ondragstart="return false;">
     <!-- BEGIN #loader -->
     <div id="loader" class="app-loader">
         <div class="material-loader">
@@ -87,27 +86,32 @@ $current = url()->current();
             <!-- END navbar-header -->
 
             <!-- BEGIN header-nav -->
-            <div class="navbar-nav ">
+            <div class="navbar-nav">
 
-                <div class="navbar-item dropdown">
-
+                <div class="nav-item dropdown">
+                    <!-- Puedes agregar aquí otros elementos de dropdown si lo necesitas -->
                 </div>
-                <div class="navbar-item navbar-user dropdown ">
-                    <a href="#" class="navbar-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                <div class="nav-item dropdown navbar-user">
+                    <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown" aria-expanded="false" role="button">
                         <img src="/assets/img/user/user-14.jpg" alt="" />
                         <span>
-                            <span class="d-none d-md-inline">{{Auth::user()->name}}</span>
+                            <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
                             <b class="caret"></b>
                         </span>
                     </a>
-
-                    <div class="dropdown-menu dropdown-menu-end me-1">
-                        <a href="user/profile" class="dropdown-item">Perfil</a>
-                        <a href="/apiserviceshistorial" class="dropdown-item">
-                            <div class="menu-text">Services Subscripted</div>
-                        </a>
-                        <a href="javascript:;" onclick="salir()" class="dropdown-item">Log Out</a>
-                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end me-1">
+                        <li>
+                            <a href="user/profile" class="dropdown-item">Perfil</a>
+                        </li>
+                        <li>
+                            <a href="/apiserviceshistorial" class="dropdown-item">
+                                <div class="menu-text">Services Subscripted</div>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" onclick="document.getElementById('logout').submit();" class="dropdown-item">Log Out</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
             <!-- END header-nav -->
@@ -116,8 +120,5 @@ $current = url()->current();
         </div>
         <!-- END #header -->
 
-        <form action="{{$url}}/logout" id="logout" method="post">
-            @csrf
-        </form>
 
         <x-sidebar></x-sidebar>

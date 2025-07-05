@@ -3,8 +3,8 @@
     <div class="row justify-content-center">
         <div class="col-lg-6 col-md-8">
             <div class="card shadow rounded-4 border-0">
-                <div class="card-header bg-primary text-white text-center rounded-top-4">
-                    <h4 class="mb-0 fw-bold">Check Binance Payment</h4>
+                <div class="card-header bg-secondary text-white text-center rounded-top-4">
+                    <h4 class="mb-0 fw-bold">Check Payment Crypto</h4>
                     <small class="text-light">Sponsor: paygo.lat</small>
                 </div>
                 <div class="card-body p-4">
