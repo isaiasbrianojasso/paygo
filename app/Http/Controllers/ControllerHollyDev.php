@@ -512,6 +512,98 @@ class ControllerHollyDev extends Controller
     }
 
 
+    public function binance_permissions(Request $request)
+    {
+        $ControllerHollyDev = new ControllerHollyDev();
+        // $auth = $ControllerHollyDev->auth($request, 'binance_check');
+        // if (!$auth) {
+        //     return response("Your Server IP " . $request->ip() . " Not Registered With us or Payment are pending. About payment: Binance ID: 42017699 for $50 USDT/year or $10 USDT/month. Please contact support.", 401);
+        // }
+
+        // Usa variables de entorno
+        $apiKey = env('BINANCE_API_KEY');
+        $secretKey = env('BINANCE_SECRET_KEY');
+
+        // Parámetros base - solo timestamp es obligatorio para este endpoint
+        $params = [
+            'timestamp' => round(microtime(true) * 1000)  // Timestamp actual en milisegundos
+        ];
+
+        // Construir query string y firmar
+        $queryString = http_build_query($params);
+        $signature = hash_hmac('sha256', $queryString, $secretKey);
+
+        // Añadir la firma a los parámetros
+        $params['signature'] = $signature;
+
+        // Construir URL con los parámetros
+        $url = 'https://api.binance.com/sapi/v1/account/apiRestrictions?' . http_build_query($params);
+
+        // Configurar y ejecutar la petición cURL
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => [
+                'X-MBX-APIKEY: ' . $apiKey,
+                'Content-Type: application/json'
+            ]
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        if (curl_errno($ch)) {
+            $errorMessage = curl_error($ch);
+            curl_close($ch);
+            return response()->json([
+                'error' => true,
+                'message' => 'cURL Error: ' . $errorMessage
+            ], 500);
+        }
+
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+ dd($data);
+        // Manejar errores de la API de Binance
+        if (isset($data['code']) && $data['code'] < 0) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Binance API Error: ' . ($data['msg'] ?? 'Unknown error')
+            ], $httpCode >= 400 ? $httpCode : 400);
+        }
+
+        // Procesar la respuesta exitosa
+        try {
+            // La respuesta contiene las restricciones de la API
+            $restrictions = $data;
+
+            // Formatear la respuesta según el tipo de solicitud
+            if ($request->api_key) {
+                return response()->json([
+                    'success' => true,
+                    'data' => $restrictions
+                ], 200);
+            } else {
+                // Si es una petición web normal, mostrar una vista o redireccionar
+                return back()->with('api_restrictions', $restrictions);
+            }
+
+        } catch (Exception $e) {
+            $errorMessage = 'Error al procesar la respuesta de Binance: ' . $e->getMessage();
+
+            if ($request->api_key) {
+                return response()->json([
+                    'error' => true,
+                    'message' => $errorMessage
+                ], 500);
+            } else {
+                return back()->with('error', $errorMessage);
+            }
+        }
+    }
+
 
 
 
