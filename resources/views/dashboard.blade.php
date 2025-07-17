@@ -17,7 +17,7 @@
                         d="M14 1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4.414A2 2 0 0 0 3 11.586l-2 2V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12.793a.5.5 0 0 0 .854.353l2.853-2.853A1 1 0 0 1 4.414 12H14a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z" />
                     <path
                         d="M5 6a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
-                </svg> Send SMS</a>
+                </svg> Validar Pago</a>
         </div>
     </div>
     <div class="border-0 card">
@@ -32,7 +32,7 @@
 
                             <input type="text" onchange="buscarMensaje()" name="buscarSms"
                                 class="form-control px-35px bg-light"
-                                placeholder="Ingresa El Numero Telefonico O El ID A Buscar" />
+                                placeholder="Ingresa El Numero Transaccion O El TRX A Buscar" />
                         </div>
                     </div>
                 </div>
@@ -54,16 +54,15 @@
                         </thead>
                         @php
                         $total = 0;
-                       $mensajes  = \App\Models\transaccion::where('user_id', Auth::id())
+                       $mensajes  = \App\Models\detalle_transaccion::where('user_id', Auth::id())
                         ->orderBy('created_at', 'desc')
                         ->get();
-                         dd( $mensajes);
                         @endphp
 
                         <tbody id="filtradosms">
                             @foreach ($mensajes as $tabla)
                             <tr onclick='detailMessage(@json($tabla))'>
-                                <td>{{ $tabla->trx }}</td>
+                                <td><pre class="text-primary">{{ $tabla->trx }}</pre></td>
                                 <td>
                                     <pre class="text-primary">{{ $tabla->cuenta_origen }}</pre>
                                 </td>
@@ -71,7 +70,7 @@
                                     <pre class="text-primary">{{ $tabla->cuenta_destino }}</pre>
                                 </td>
                                 <td>
-                                    <pre class="text-primary">{{ $tabla->monto }} {{ strtoupper($tabla->moneda) }}</pre>
+                                    <pre class="text-primary">$ {{ $tabla->monto }} {{ strtoupper($tabla->moneda) }}</pre>
                                 </td>
                                 <td>
                                     @if ($tabla->acreditado)

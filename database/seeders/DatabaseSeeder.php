@@ -23,7 +23,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $api_key = Str::random(6);
-        $api_token  = Str::uuid();
+        $api_token = Str::uuid();
         $uuid = Str::uuid();
 
         // User::factory(10)->create();
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
             'password' => 12345678,
             'telegram' => 142398483,
             'telefono' => 4445705494,
-            'habilitado'=>1,
+            'habilitado' => 1,
             'api_key' => $api_key,
             'api_token' => $api_token,
             'binance_address' => 'TN2bgYx4PcwMQeGqBDWu894CgHcwkfFJMa',
@@ -72,8 +72,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-       Transaccion::create([
-            'user_id' => 1,
+        Transaccion::create([
+            'id' => 1,
         ]);
 
         detalle_transaccion::create([
@@ -87,6 +87,8 @@ class DatabaseSeeder extends Seeder
             'captura' => 'capture_data',
             'moneda' => 'USD',
             'id_transaccion' => 1, // Assuming this is the transaccion ID
+            'user_id' => 1, // Assuming this is the transaccion ID
+
         ]);
         $this->call(importaUsuarios::class);
 

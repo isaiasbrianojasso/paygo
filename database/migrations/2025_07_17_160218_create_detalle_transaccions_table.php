@@ -23,6 +23,10 @@ return new class extends Migration
             $table->string('captura')->nullable();
             $table->string('moneda')->nullable(); // Expiration time for the token
             $table->foreignId('id_transaccion')->constrained('transaccions')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('tipo')->nullable(); // Tipo de transacción (ej. "transferencia", "pago", etc.)
+            $table->string('referencia')->nullable(); // Referencia de la transacción
+            $table->string('descripcion')->nullable(); // Des
             $table->timestamps();
         });
     }
