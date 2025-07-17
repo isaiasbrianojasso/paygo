@@ -73,4 +73,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function getAuthIdentifier()
+{
+    return (string) $this->getKey();
+}
+
 }

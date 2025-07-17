@@ -43,33 +43,57 @@
                     <table class="table mb-0 align-middle table-hover table-panel text-nowrap">
                         <thead>
                             <tr>
-                                <th>Gateway</th>
-                                <th>Mensaje</th>
-                                <th>Numero/Precio</th>
-                                <th>Status</th>
+                                <th>Transaccion ID</th>
+                                <th>Origen</th>
+                                <th>Destino</th>
+                                <th>Monto</th>
+                                <th>Acreditado</th>
                                 <th>Fecha</th>
+
                             </tr>
                         </thead>
+                        @php
+                        $total = 0;
+                       $mensajes  = \App\Models\transaccion::where('user_id', Auth::id())
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+                         dd( $mensajes);
+                        @endphp
+
                         <tbody id="filtradosms">
-                            @foreach ( $mensajes = App\Models\SMS::where('id_user',
-                            Auth::user()->id)->orderBy('created_at', 'desc')->get() as $tabla)
+                            @foreach ($mensajes as $tabla)
                             <tr onclick='detailMessage(@json($tabla))'>
-                                <td> {{ $tabla->sender_name }}</td>
-                                <td> <textarea class="border form-control border-info" cols="30"
-                                        rows="10"> {{ $tabla->msj }}</textarea> </td>
+                                <td>{{ $tabla->trx }}</td>
                                 <td>
-                                    <pre class="text-primary">{{ $tabla->number }} </pre>/ ${{$tabla->costo }} C
+                                    <pre class="text-primary">{{ $tabla->cuenta_origen }}</pre>
                                 </td>
-                                <td> @if($tabla->status==1) <span
-                                        class="px-2 border rounded badge border-success text-success pt-5px pb-5px fs-12px d-inline-flex align-items-center"><i
-                                            class="fa fa-circle fs-9px fa-fw me-5px"></i> Enviado</span> @else <span
-                                        class="px-2 border rounded badge border-danger text-danger pt-5px pb-5px fs-12px d-inline-flex align-items-center"><i
-                                            class="fa fa-circle fs-9px fa-fw me-5px"></i> Fallido</span> @endif </td>
-                                <td>{{ $tabla->created_at->translatedFormat('l j F Y \a \l\a\s H:i') }}
-                                    @php $total += $tabla->costo; @endphp </td>
+                                <td>
+                                    <pre class="text-primary">{{ $tabla->cuenta_destino }}</pre>
+                                </td>
+                                <td>
+                                    <pre class="text-primary">{{ $tabla->monto }} {{ strtoupper($tabla->moneda) }}</pre>
+                                </td>
+                                <td>
+                                    @if ($tabla->acreditado)
+                                    <span
+                                        class="px-2 border rounded badge border-success text-success pt-1 pb-1 fs-12px d-inline-flex align-items-center">
+                                        <i class="fa fa-circle fs-9px fa-fw me-1"></i> Success
+                                    </span>
+                                    @else
+                                    <span
+                                        class="px-2 border rounded badge border-danger text-danger pt-1 pb-1 fs-12px d-inline-flex align-items-center">
+                                        <i class="fa fa-circle fs-9px fa-fw me-1"></i> Failed
+                                    </span>
+                                    @endif
+                                </td>
+                                <td>
+                                    {{ $tabla->created_at->translatedFormat('l j F Y \a \l\a\s H:i') }}
+                                    @php $total += $tabla->costo ?? 0; @endphp
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
+
 
                     </table>
                 </div>

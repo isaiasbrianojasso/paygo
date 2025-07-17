@@ -8,7 +8,7 @@ use App\Http\Controllers\XiaomiController;
 use App\Http\Controllers\ControllerCall;
 use App\Http\Controllers\OCRController;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\WebAuthnController;
 use App\Models\User;
 
 Route::get('/', function () {
@@ -94,3 +94,6 @@ Route::match(['get', 'post'], '/binance_pay', [ControllerHollyDev::class, 'binan
 //Route::match(['get', 'post'], '/apiserviceshistorial', [ControllerHollyDev::class, 'apiserviceshistorial']);
 Route::get('/form', [OCRController::class, 'form'])->name('ocr.form');
 Route::post('/ocr-form', [OCRController::class, 'extractFromForm'])->name('ocr.extract');
+Route::get('/passkey/register', [WebAuthnController::class, 'create'])->name('passkey.register');
+Route::post('/passkey/options', [WebAuthnController::class, 'options'])->name('passkey.options');
+Route::post('/passkey/verify', [WebAuthnController::class, 'verify'])->name('passkey.verify');

@@ -82,7 +82,7 @@ class ControllerHollyDev extends Controller
             $current = new Carbon();
             $texto = $user->email . $current;
             //$hash = hash('sha256', data: $texto);
-            $hash  = Str::uuid();
+            $hash = Str::uuid();
             $user->api_token = $hash;
             $user->save();
         } catch (Exception $e) {
@@ -90,7 +90,7 @@ class ControllerHollyDev extends Controller
             $current = new Carbon();
             $texto = $user->email . $current;
             //$hash = hash('sha256', data: $texto);
-            $hash  = Str::uuid();
+            $hash = Str::uuid();
             $user->api_token = $hash;
             $user->save();
             return response()->json(['error' => 'Area Prohibida ... a poco creias que no pense en esto'], 500);
@@ -484,7 +484,6 @@ class ControllerHollyDev extends Controller
         }
 
         try {
-
             $transaccion = $data[0];
             $mensaje = "Depósito recibido:\n" .
                 "ID: {$transaccion['id']}\n" .
@@ -501,7 +500,6 @@ class ControllerHollyDev extends Controller
                     ->header('Content-Type', 'application/json');
             }
         } catch (Exception $e) {
-
             if ($request->api_key == '') {
                 return back()->with('error', 'Hubo un problema al procesar el pago. Por favor intenta de nuevo.');
             } else {
@@ -608,203 +606,203 @@ class ControllerHollyDev extends Controller
 
 
 
-public function binance_checks(Request $request, $montoEsperado = 100)
-{
-    $apiKey = env('BINANCE_API_KEY');
-    $apiSecret = env('BINANCE_SECRET_KEY');
-    $baseUrl = 'https://bpay.binanceapi.com'; // Binance Pay endpoint
+    public function binance_checks(Request $request, $montoEsperado = 100)
+    {
+        $apiKey = env('BINANCE_API_KEY');
+        $apiSecret = env('BINANCE_SECRET_KEY');
+        $baseUrl = 'https://bpay.binanceapi.com'; // Binance Pay endpoint
 
-    // Parámetros de la solicitud
-    $params = [
-        'merchantTradeNo' => $request->txId,
-        'timestamp' => round(microtime(true) * 1000),
-        'nonce' => bin2hex(random_bytes(16)),
-    ];
+        // Parámetros de la solicitud
+        $params = [
+            'merchantTradeNo' => $request->txId,
+            'timestamp' => round(microtime(true) * 1000),
+            'nonce' => bin2hex(random_bytes(16)),
+        ];
 
-    $bodyJson = json_encode(['merchantTradeNo' => $request->txId], JSON_UNESCAPED_SLASHES);
-    $payload = $params['timestamp'] . "\n" . $params['nonce'] . "\n" . $bodyJson . "\n";
-    $signature = hash_hmac('sha512', $payload, $apiSecret);
+        $bodyJson = json_encode(['merchantTradeNo' => $request->txId], JSON_UNESCAPED_SLASHES);
+        $payload = $params['timestamp'] . "\n" . $params['nonce'] . "\n" . $bodyJson . "\n";
+        $signature = hash_hmac('sha512', $payload, $apiSecret);
 
-    $ch = curl_init("$baseUrl/binancepay/openapi/v2/order/query");
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/json',
-        'BinancePay-Timestamp: ' . $params['timestamp'],
-        'BinancePay-Nonce: ' . $params['nonce'],
-        'BinancePay-Certificate-SN: ' . $apiKey,
-        'BinancePay-Signature: ' . $signature,
-    ]);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $bodyJson);
+        $ch = curl_init("$baseUrl/binancepay/openapi/v2/order/query");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            'BinancePay-Timestamp: ' . $params['timestamp'],
+            'BinancePay-Nonce: ' . $params['nonce'],
+            'BinancePay-Certificate-SN: ' . $apiKey,
+            'BinancePay-Signature: ' . $signature,
+        ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $bodyJson);
 
-    $response = curl_exec($ch);
-    dd($response);
-    curl_close($ch);
-
-    $data = json_decode($response, true);
-
-    if (isset($data['status']) && $data['status'] === 'SUCCESS' && isset($data['data'])) {
-        $order = $data['data'];
-        if (isset($order['orderAmount']) && $order['orderAmount'] == $montoEsperado && $order['status'] === 'PAID') {
-            return [
-                'success' => true,
-                'message' => 'La transacción se verificó correctamente',
-                'data' => $order
-            ];
-        } else {
-            return [
-                'success' => false,
-                'message' => 'El monto no coincide o la orden no está pagada',
-                'data' => $order
-            ];
-        }
-    }
-
-    return [
-        'success' => false,
-        'message' => 'La transacción no pudo ser verificada',
-        'data' => $data ?? null
-    ];
-}
-/*
-
-public function binance_check_id(Request $request)
-{
-
-    // Validar que tengamos los parámetros necesarios
-    if (!$request->has(['txId'])) {
-        return ['success' => false, 'error' => 'Faltan parámetros requeridos (txId o trx)'];
-    }
-
-    $apiKey = env('BINANCE_API_KEY');
-    $apiSecret = env('BINANCE_SECRET_KEY');
-    $timestamp = round(microtime(true) * 1000);
-
-    $params = [
-        'orderId' => $request->txId,
-        'timestamp' => $timestamp
-    ];
-
-    $queryString = http_build_query($params);
-    $signature = hash_hmac('sha256', $queryString, $apiSecret);
-    $url = "https://api.binance.com/sapi/v1/pay/transactions?$queryString&signature=$signature";
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-MBX-APIKEY: $apiKey"]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-
-    if (curl_errno($ch)) {
+        $response = curl_exec($ch);
+        dd($response);
         curl_close($ch);
-        return ['success' => false, 'error' => 'Error de conexión: ' . curl_error($ch)];
-    }
 
-    curl_close($ch);
+        $data = json_decode($response, true);
 
-    $data = json_decode($response, true);
+        if (isset($data['status']) && $data['status'] === 'SUCCESS' && isset($data['data'])) {
+            $order = $data['data'];
+            if (isset($order['orderAmount']) && $order['orderAmount'] == $montoEsperado && $order['status'] === 'PAID') {
+                return [
+                    'success' => true,
+                    'message' => 'La transacción se verificó correctamente',
+                    'data' => $order
+                ];
+            } else {
+                return [
+                    'success' => false,
+                    'message' => 'El monto no coincide o la orden no está pagada',
+                    'data' => $order
+                ];
+            }
+        }
 
-    // Verificar si la API devolvió un error
-    if (!isset($data['code']) || $data['code'] !== "000000") {
         return [
             'success' => false,
-            'error' => $data['message'] ?? 'Error desconocido en la API de Binance',
-            'api_response' => $data // Opcional: para debugging
+            'message' => 'La transacción no pudo ser verificada',
+            'data' => $data ?? null
         ];
     }
+    /*
 
-    // Buscar la transacción específica
-    if (isset($data['data']) && is_array($data['data'])) {
-        foreach ($data['data'] as $transaction) {
-            if (isset($transaction['orderId']) && $transaction['orderId'] === $request->txId) {
-                $mensaje = "Binance ID: " . ($transaction['payerInfo']['binanceId'] ?? 'N/A') . " | " .
-                           "Nombre: " . ($transaction['payerInfo']['name'] ?? 'No disponible') . " | " .
-                           "Monto: " . ($transaction['amount'] ?? 0) . " " . ($transaction['currency'] ?? 'USDT') . " | " .
-                           "Transaction ID: " . ($transaction['transactionId'] ?? 'N/A');
+    public function binance_check_id(Request $request)
+    {
 
-                return back()->with('payment_check', $mensaje);
+        // Validar que tengamos los parámetros necesarios
+        if (!$request->has(['txId'])) {
+            return ['success' => false, 'error' => 'Faltan parámetros requeridos (txId o trx)'];
+        }
 
+        $apiKey = env('BINANCE_API_KEY');
+        $apiSecret = env('BINANCE_SECRET_KEY');
+        $timestamp = round(microtime(true) * 1000);
+
+        $params = [
+            'orderId' => $request->txId,
+            'timestamp' => $timestamp
+        ];
+
+        $queryString = http_build_query($params);
+        $signature = hash_hmac('sha256', $queryString, $apiSecret);
+        $url = "https://api.binance.com/sapi/v1/pay/transactions?$queryString&signature=$signature";
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-MBX-APIKEY: $apiKey"]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+
+        if (curl_errno($ch)) {
+            curl_close($ch);
+            return ['success' => false, 'error' => 'Error de conexión: ' . curl_error($ch)];
+        }
+
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+
+        // Verificar si la API devolvió un error
+        if (!isset($data['code']) || $data['code'] !== "000000") {
+            return [
+                'success' => false,
+                'error' => $data['message'] ?? 'Error desconocido en la API de Binance',
+                'api_response' => $data // Opcional: para debugging
+            ];
+        }
+
+        // Buscar la transacción específica
+        if (isset($data['data']) && is_array($data['data'])) {
+            foreach ($data['data'] as $transaction) {
+                if (isset($transaction['orderId']) && $transaction['orderId'] === $request->txId) {
+                    $mensaje = "Binance ID: " . ($transaction['payerInfo']['binanceId'] ?? 'N/A') . " | " .
+                               "Nombre: " . ($transaction['payerInfo']['name'] ?? 'No disponible') . " | " .
+                               "Monto: " . ($transaction['amount'] ?? 0) . " " . ($transaction['currency'] ?? 'USDT') . " | " .
+                               "Transaction ID: " . ($transaction['transactionId'] ?? 'N/A');
+
+                    return back()->with('payment_check', $mensaje);
+
+                }
             }
         }
-    }
 
 
-//    $this->binance_checks($request);
+    //    $this->binance_checks($request);
 
-    return back()->with('error', 'Hubo un problema al procesar el pago. Por favor intenta de nuevo.');
+        return back()->with('error', 'Hubo un problema al procesar el pago. Por favor intenta de nuevo.');
 
 
 
-}*/
-public function binance_check_id(Request $request)
-{
-    // 1. Verificar si es por imagen
-    if ($request->hasFile('payment_image')) {
-        $image = $request->file('payment_image');
+    }*/
+    public function binance_check_id(Request $request)
+    {
+        // 1. Verificar si es por imagen
+        if ($request->hasFile('payment_image')) {
+            $image = $request->file('payment_image');
 
-        // Guardar temporalmente la imagen
-        $imagePath = $image->getPathname();
+            // Guardar temporalmente la imagen
+            $imagePath = $image->getPathname();
 
-        // Usar Tesseract (requiere estar instalado en el servidor)
-        $outputFile = tempnam(sys_get_temp_dir(), 'ocr');
-        shell_exec("tesseract \"$imagePath\" \"$outputFile\" -l fra+eng"); // OCR francés + inglés
+            // Usar Tesseract (requiere estar instalado en el servidor)
+            $outputFile = tempnam(sys_get_temp_dir(), 'ocr');
+            shell_exec("tesseract \"$imagePath\" \"$outputFile\" -l fra+eng"); // OCR francés + inglés
 
-        $ocrText = file_get_contents($outputFile . '.txt');
+            $ocrText = file_get_contents($outputFile . '.txt');
 
-        // Buscar ID largo (18+ dígitos)
-        if (preg_match('/\b\d{18,20}\b/', $ocrText, $matches)) {
-            $request->merge(['txId' => $matches[0]]);
-        } else {
-            return back()->with('error', 'No se pudo detectar un Binance ID en la imagen.');
-        }
-    }
-
-    // 2. Validar que tengamos el txId final
-    if (!$request->has('txId')) {
-        return ['success' => false, 'error' => 'Falta el parámetro txId'];
-    }
-
-    // 3. Consulta en Binance API
-    $apiKey = env('BINANCE_API_KEY');
-    $apiSecret = env('BINANCE_SECRET_KEY');
-    $timestamp = round(microtime(true) * 1000);
-
-    $params = [
-        'orderId' => $request->txId,
-        'timestamp' => $timestamp
-    ];
-
-    $queryString = http_build_query($params);
-    $signature = hash_hmac('sha256', $queryString, $apiSecret);
-    $url = "https://api.binance.com/sapi/v1/pay/transactions?$queryString&signature=$signature";
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-MBX-APIKEY: $apiKey"]);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $response = curl_exec($ch);
-    curl_close($ch);
-
-    $data = json_decode($response, true);
-
-    if (!isset($data['code']) || $data['code'] !== "000000") {
-        return back()->with('error', $data['message'] ?? 'Error desconocido en la API de Binance');
-    }
-
-    // 4. Buscar la transacción específica
-    if (isset($data['data']) && is_array($data['data'])) {
-        foreach ($data['data'] as $transaction) {
-            if ($transaction['orderId'] == $request->txId) {
-                $mensaje = "✅ Binance ID: " . ($transaction['payerInfo']['binanceId'] ?? 'N/A') . " | " .
-                           "Nombre: " . ($transaction['payerInfo']['name'] ?? 'No disponible') . " | " .
-                           "Monto: " . ($transaction['amount'] ?? 0) . " " . ($transaction['currency'] ?? 'USDT') . " | " .
-                           "Transaction ID: " . ($transaction['transactionId'] ?? 'N/A');
-
-                return back()->with('payment_check', $mensaje);
+            // Buscar ID largo (18+ dígitos)
+            if (preg_match('/\b\d{18,20}\b/', $ocrText, $matches)) {
+                $request->merge(['txId' => $matches[0]]);
+            } else {
+                return back()->with('error', 'No se pudo detectar un Binance ID en la imagen.');
             }
         }
-    }
 
-    return back()->with('error', 'No se encontró la transacción con ese Binance ID.');
-}
+        // 2. Validar que tengamos el txId final
+        if (!$request->has('txId')) {
+            return ['success' => false, 'error' => 'Falta el parámetro txId'];
+        }
+
+        // 3. Consulta en Binance API
+        $apiKey = env('BINANCE_API_KEY');
+        $apiSecret = env('BINANCE_SECRET_KEY');
+        $timestamp = round(microtime(true) * 1000);
+
+        $params = [
+            'orderId' => $request->txId,
+            'timestamp' => $timestamp
+        ];
+
+        $queryString = http_build_query($params);
+        $signature = hash_hmac('sha256', $queryString, $apiSecret);
+        $url = "https://api.binance.com/sapi/v1/pay/transactions?$queryString&signature=$signature";
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-MBX-APIKEY: $apiKey"]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+
+        if (!isset($data['code']) || $data['code'] !== "000000") {
+            return back()->with('error', $data['message'] ?? 'Error desconocido en la API de Binance');
+        }
+
+        // 4. Buscar la transacción específica
+        if (isset($data['data']) && is_array($data['data'])) {
+            foreach ($data['data'] as $transaction) {
+                if ($transaction['orderId'] == $request->txId) {
+                    $mensaje = "✅ Binance ID: " . ($transaction['payerInfo']['binanceId'] ?? 'N/A') . " | " .
+                        "Nombre: " . ($transaction['payerInfo']['name'] ?? 'No disponible') . " | " .
+                        "Monto: " . ($transaction['amount'] ?? 0) . " " . ($transaction['currency'] ?? 'USDT') . " | " .
+                        "Transaction ID: " . ($transaction['transactionId'] ?? 'N/A');
+
+                    return back()->with('payment_check', $mensaje);
+                }
+            }
+        }
+
+        return back()->with('error', 'No se encontró la transacción con ese Binance ID.');
+    }
 
 
 }

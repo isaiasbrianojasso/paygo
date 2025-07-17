@@ -18,6 +18,8 @@ $google = IP::where( 'service', 'google_maps')->where('user_id',Auth::User()->id
                     <img src="assets/img/paygo.png" style="width:100%" alt="">
 
                 </a>
+                <h1 style="margin-left: 50px;">$0.00 USD*</h1>
+                <h4 style="margin-left: 50px;">Fondos disponibles</h4>
             </div>
 
             <!-- Perfil desplegable -->
@@ -58,7 +60,7 @@ $google = IP::where( 'service', 'google_maps')->where('user_id',Auth::User()->id
                     <div class="menu-text"> PAYMENT CRYPTO WITH TxID</div>
                 </a>
             </div>
-               <div class="menu-item @if(preg_match('/\bpayment_binance\b/i', $current)) active @endif">
+            <div class="menu-item @if(preg_match('/\bpayment_binance\b/i', $current)) active @endif">
                 <a href="/payment_binance" class="menu-link">
                     <div class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                             fill="currentColor" class="bi bi-currency-bitcoin" viewBox="0 0 16 16">
@@ -137,6 +139,18 @@ $google = IP::where( 'service', 'google_maps')->where('user_id',Auth::User()->id
                 </a>
             </div>
             @endif
+            <div class="menu-header">Log Out</div>
+
+            <li class="menu-item">
+                <a href="#" class="menu-link"
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Log
+                    Out</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+
+            </li>
+
             <!-- Botón minimizar -->
             <div class="menu-item d-flex">
                 <a href="javascript:;" class="app-sidebar-minify-btn ms-auto" data-toggle="app-sidebar-minify">

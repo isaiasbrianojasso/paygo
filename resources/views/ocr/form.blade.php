@@ -1,17 +1,17 @@
 @include('layouts.header')
 <!-- BEGIN #content -->
 <div id="content" class="app-content">
-    <div class="card border-0">
+    <div class="border-0 card">
         <div class="panel">
-            <div class="panel-heading bg-blue-700 text-white strong">Check Payment Transfer</div>
+            <div class="text-white bg-blue-700 panel-heading strong">Check Payment Transfer</div>
         </div>
 
         <body class="p-4">
             <div class="d-flex justify-content-center">
-                <img src="{{ asset('assets/img/paygo.png') }}" class="ml-auto mr-auto " width="20%" alt="Paygo Logo"
-                    class="img-fluid">
+                <img src="{{ asset('assets/img/bbva_deposit.jpeg') }}" class="ml-auto mr-auto " width="20%"
+                    alt="Paygo Logo" class="img-fluid">
             </div>
-            <h2>Subir Comprobante para OCR</h2>
+            <h2>Subir Comprobante</h2>
 
             <form action="{{ route('ocr.extract') }}" method="POST" enctype="multipart/form-data" class="mb-4">
                 @csrf

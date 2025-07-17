@@ -103,7 +103,7 @@ class OCRController extends Controller
         }
         $data = [
             'fecha' => $fecha,
-            'clave_rastreo' => 'MBAN01002504100065360870',
+            'clave_rastreo' =>  $clave_rastreo ,
             'emisor' => '40012', // <- BBVA correcto
             'receptor' => '40014', // <- STP (si aplica)
             'cuenta' => $cuenta_destino,

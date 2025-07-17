@@ -17,10 +17,8 @@ return new class extends Migration
             $table->string('name');
             $table->string(  'email')->unique();
             $table->string(  'telegram')->unique()->nullable();
-             $table->string(  'telefono')->unique()->nullable();
+            $table->string(  'telefono')->unique()->nullable();
             $table->float( 'creditos')->nullable();
-            $table->integer( 'sms')->nullable();
-            $table->float( 'usados')->nullable();
             $table->float( 'borrado')->nullable();
             $table->float(  'habilitado')->nullable()->value(0);
             $table->date( 'fecha_inicio')->nullable();
@@ -28,6 +26,8 @@ return new class extends Migration
             $table->string('api_key')->unique()->nullable();
             $table->string( 'api_token')->unique()->nullable();
             $table->string( 'binance_address')->unique()->nullable();
+            $table->string( 'BINANCE_API_KEY')->unique()->nullable();
+            $table->string( 'BINANCE_SECRET_KEY')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string( 'password');
             $table->rememberToken();

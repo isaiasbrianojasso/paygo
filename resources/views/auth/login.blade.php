@@ -80,8 +80,12 @@ $url = url()->current();
                         </div>
 
                         <div class="mb-20px">
-                            <button type="submit" class="btn btn-primary d-block w-100 h-45px btn-lg">Iniciar
+
+                            <button type="submit" class="btn btn-primary d-block w-100 h-45px btn-lg mb-5">Iniciar
                                 Sesion</button>
+
+                                <button id="register-passkey" class="btn btn-secondary d-block w-100 h-45px btn-lg mt-5">Registrar Passkey</button>
+
                         </div>
                     </form>
                 </div>
@@ -98,6 +102,24 @@ $url = url()->current();
                     This service is powered by <strong>paygo.blog</strong> — All rights reserved © {{ date('Y') }}
                 </div>
 </div>
+<script>
+    const email = document.querySelector('input[name="email"]');
+    const password = document.querySelector('input[name="password"]');
+    const options = await fetch('/passkey/options', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username: email.value, password: password.value })
+}).then(r => r.json());
+
+const credential = await navigator.credentials.create({ publicKey: options });
+
+await fetch('/passkey/verify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(credential)
+});
+
+</script>
 <!-- END #app -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
