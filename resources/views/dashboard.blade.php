@@ -1,5 +1,6 @@
 @include('layouts.header')
-@php $total=0 ;@endphp
+@php $total=0 ;
+@endphp
 <!-- BEGIN #content -->
 <div id="content" class="app-content">
     <div class="mb-3 d-flex align-items-center">

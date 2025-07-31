@@ -1,3 +1,7 @@
+@php
+$uuid = Str::uuid();
+
+@endphp
 @if(session('success'))
 <script>
     Swal.fire(
@@ -41,11 +45,12 @@
 <a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top" data-toggle="scroll-to-top"><i
         class="fa fa-angle-up"></i></a>
 <!-- END scroll-top-btn -->
-  <div class="card-footer text-center text-muted small">
-                    This service is powered by <strong>paygo.blog</strong> — All rights reserved © {{ date('Y') }}
-                </div>
+<div class="card-footer text-center text-muted small">
+    This service is powered by <strong>paygo.blog</strong> — All rights reserved © {{ date('Y') }} {{ $uuid }}
+</div>
 </div>
 <!-- END #app -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- ================== BEGIN core-js ================== -->

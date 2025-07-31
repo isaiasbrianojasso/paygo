@@ -1,9 +1,23 @@
 @php
 $url = url()->current();
+if (request()->routeIs('login')) {
+    $url = route('login');
+} elseif (request()->routeIs('register')) {
+    $url = route('register');
+}
+if (request()->routeIs('password.request')) {
+    $url = route('password.request');
+} elseif (request()->routeIs('password.reset')) {
+    $url = route('password.reset');
+}
+if (request()->routeIs('passkey.register')) {
+    $url = route('passkey.register');
+} elseif (request()->routeIs('passkey.verify')) {
+    $url = route('passkey.verify');
+}
 @endphp
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8" />
     <title>{{ config('app.name') }}</title>
@@ -18,8 +32,11 @@ $url = url()->current();
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
     <link href="/assets/css/vendor.min.css" rel="stylesheet" />
     <link href="/assets/css/material/app.min.css" rel="stylesheet" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous">
+    </script>
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- ================== END core-css ================== -->
@@ -55,7 +72,8 @@ $url = url()->current();
                 <div class="login-header">
                     <div class="brand">
                         <div class="d-flex align-items-center">
-                        <img src="/assets/img/paygo.png" alt="Logo" class="img-fluid me-2" style="max-height: 200px;">
+                            <img src="/assets/img/paygo.png" alt="Logo" class="img-fluid me-2"
+                                style="max-height: 200px;">
                         </div>
                         <small> Confia en nosotros ,validamos tus pagos por ti </small>
                     </div>
@@ -84,7 +102,8 @@ $url = url()->current();
                             <button type="submit" class="btn btn-primary d-block w-100 h-45px btn-lg mb-5">Iniciar
                                 Sesion</button>
 
-                                <button id="register-passkey" class="btn btn-secondary d-block w-100 h-45px btn-lg mt-5">Registrar Passkey</button>
+                            <button id="register-passkey"
+                                class="btn btn-secondary d-block w-100 h-45px btn-lg mt-5">Registrar Passkey</button>
 
                         </div>
                     </form>
@@ -94,16 +113,16 @@ $url = url()->current();
             <!-- END login-container -->
         </div>
         <!-- END login -->
-                 <!-- BEGIN scroll-top-btn -->
-<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top" data-toggle="scroll-to-top"><i
-        class="fa fa-angle-up"></i></a>
-<!-- END scroll-top-btn -->
-  <div class="card-footer text-center text-muted small">
-                    This service is powered by <strong>paygo.blog</strong> — All rights reserved © {{ date('Y') }}
-                </div>
-</div>
-<script>
-    const email = document.querySelector('input[name="email"]');
+        <!-- BEGIN scroll-top-btn -->
+        <a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top"
+            data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
+        <!-- END scroll-top-btn -->
+        <div class="card-footer text-center text-muted small">
+            This service is powered by <strong>paygo.blog</strong> — All rights reserved © {{ date('Y') }}
+        </div>
+    </div>
+    <script>
+        const email = document.querySelector('input[name="email"]');
     const password = document.querySelector('input[name="password"]');
     const options = await fetch('/passkey/options', {
     method: 'POST',
@@ -119,16 +138,15 @@ await fetch('/passkey/verify', {
     body: JSON.stringify(credential)
 });
 
-</script>
-<!-- END #app -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </script>
+    <!-- END #app -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- ================== BEGIN core-js ================== -->
-<script src="/assets/js/vendor.min.js"></script>
-<script src="/assets/js/app.min.js"></script>
-<!-- ================== END core-js ================== -->
+    <!-- ================== BEGIN core-js ================== -->
+    <script src="/assets/js/vendor.min.js"></script>
+    <script src="/assets/js/app.min.js"></script>
+    <!-- ================== END core-js ================== -->
 
-<!-- ================== BEGIN page-js ================== -->
-<script src="/assets/js/demo/login-v2.demo.js"></script>
-<!-- ================== END page-js ================== -->
-
+    <!-- ================== BEGIN page-js ================== -->
+    <script src="/assets/js/demo/login-v2.demo.js"></script>
+    <!-- ================== END page-js ================== -->
