@@ -55,7 +55,7 @@
                         </thead>
                         @php
                         $total = 0;
-                       $mensajes  = \App\Models\detalle_transaccion::where('user_id', Auth::id())
+                        $mensajes = \App\Models\detalle_transaccion::where('user_id', Auth::id())
                         ->orderBy('created_at', 'desc')
                         ->get();
                         @endphp
@@ -63,7 +63,9 @@
                         <tbody id="filtradosms">
                             @foreach ($mensajes as $tabla)
                             <tr onclick='detailMessage(@json($tabla))'>
-                                <td><pre class="text-primary">{{ $tabla->trx }}</pre></td>
+                                <td>
+                                    <pre class="text-primary">{{ $tabla->trx }}</pre>
+                                </td>
                                 <td>
                                     <pre class="text-primary">{{ $tabla->cuenta_origen }}</pre>
                                 </td>
@@ -71,7 +73,8 @@
                                     <pre class="text-primary">{{ $tabla->cuenta_destino }}</pre>
                                 </td>
                                 <td>
-                                    <pre class="text-primary">$ {{ $tabla->monto }} {{ strtoupper($tabla->moneda) }}</pre>
+                                    <pre
+                                        class="text-primary">$ {{ $tabla->monto }} {{ strtoupper($tabla->moneda) }}</pre>
                                 </td>
                                 <td>
                                     @if ($tabla->acreditado)

@@ -27,11 +27,11 @@
                             <td>{{ $user->email }}</td>
                             <td>
                                 @php
-                                    $fechaInicio = \Carbon\Carbon::parse($user->fecha_inicio);
-                                    $fechaFinal = \Carbon\Carbon::parse($user->fecha_final);
-                                    $diferencia = $fechaInicio->diff($fechaFinal);
-                                    $meses = $diferencia->format('%m');
-                                    $dias = $diferencia->format('%d');
+                                $fechaInicio = \Carbon\Carbon::parse($user->fecha_inicio);
+                                $fechaFinal = \Carbon\Carbon::parse($user->fecha_final);
+                                $diferencia = $fechaInicio->diff($fechaFinal);
+                                $meses = $diferencia->format('%m');
+                                $dias = $diferencia->format('%d');
                                 @endphp
                                 {{ $meses }} meses, {{ $dias }} días
                             </td>

@@ -1,23 +1,24 @@
 @php
 $url = url()->current();
 if (request()->routeIs('login')) {
-    $url = route('login');
+$url = route('login');
 } elseif (request()->routeIs('register')) {
-    $url = route('register');
+$url = route('register');
 }
 if (request()->routeIs('password.request')) {
-    $url = route('password.request');
+$url = route('password.request');
 } elseif (request()->routeIs('password.reset')) {
-    $url = route('password.reset');
+$url = route('password.reset');
 }
 if (request()->routeIs('passkey.register')) {
-    $url = route('passkey.register');
+$url = route('passkey.register');
 } elseif (request()->routeIs('passkey.verify')) {
-    $url = route('passkey.verify');
+$url = route('passkey.verify');
 }
 @endphp
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <title>{{ config('app.name') }}</title>
