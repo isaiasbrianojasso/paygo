@@ -66,4 +66,5 @@ class ControllerUser extends Controller
         // Redireccionar a la página de inicio o a otra vista
         return redirect('/users/show')->with('success', 'Usuario eliminado exitosamente');
     }
+
 }

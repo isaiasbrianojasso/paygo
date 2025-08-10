@@ -11,8 +11,12 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Str;
 
-class User extends Authenticatable
+use Laragear\WebAuthn\Contracts\WebAuthnAuthenticatable;
+use Laragear\WebAuthn\WebAuthnAuthentication;
+
+class User extends Authenticatable implements WebAuthnAuthenticatable
 {
+    use WebAuthnAuthentication;
     use HasApiTokens;
 
     /** @use HasFactory<\Database\Factories\UserFactory> */

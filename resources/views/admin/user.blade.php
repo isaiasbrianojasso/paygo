@@ -24,6 +24,23 @@
                     <input type="email" name="email" id="email" value="{{ $user->email }}" class="form-control"
                         autocomplete="email">
                 </div>
+                    <div class="mb-3">
+                    <label for="telegram_token" class="form-label">Telegram Bot token webhook</label>
+                    <input type="text" name="telegram_token" id="telegram_token" value="{{ $user->telegram_token }}" class="form-control"
+                        autocomplete="telegram_token">
+                </div>
+                <div class="mb-3">
+                    <label for="chatid" class="form-label">Telegram CHAT ID</label>
+                    <input type="text" name="chatid" id="chatid" value="{{ $user->chatid }}" class="form-control"
+                        autocomplete="chatid">
+                </div>
+                <div class="mb-3">
+                    <label for="binance" class="form-label">Binance API (Only read mode)</label>
+                    <input type="text" name="binance" id="binance" value="{{ $user->chatid }}" class="form-control"
+                        autocomplete="binance">
+                </div>
+
+
                 <div class="mb-3">
                     <label for="habilitado" class="form-label">Habilitado</label>
                     <select name="habilitado" class="form-select">

@@ -10,12 +10,12 @@ use Laragear\WebAuthn\WebAuthn; // Import the WebAuthn class
 class WebAuthnController extends Controller
 {
     protected $webauthn;
-
+/*
     public function __construct(WebAuthn $webauthn)
     {
         $this->middleware('auth')->except(['loginOptions', 'loginVerify']);
         $this->webauthn = $webauthn;
-    }
+    }*/
 
     /**
      * Mostrar la vista para registrar una nueva passkey.

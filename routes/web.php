@@ -10,6 +10,12 @@ use App\Http\Controllers\OCRController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebAuthnController;
 use App\Models\User;
+use Laragear\WebAuthn\Http\Requests\AttestationRequest;
+use Laragear\WebAuthn\WebAuthn;
+use Illuminate\Support\Facades\Auth;
+// Esto registrará todas las rutas necesarias para WebAuthn
+
+// O si prefieres solo la ruta de verificación:
 
 Route::get('/', function () {
     return view('welcome');
@@ -85,6 +91,13 @@ Route::middleware([
     Route::match(['get', 'post'], '/regenerarCredenciales', [ControllerHollyDev::class, 'regenerarCredenciales']);
 });
 
+ Route::get('/pay/zeta', function () {
+        return view('/pay/zeta', [
+            'SMS' => App\Models\SMS::all(),
+        ]);
+    });
+Route::post('/zeta', [ControllerHollyDev::class, 'processPayment'])->name('zeta');
+
 //binance
 Route::match(['get', 'post'], '/binance_check', [ControllerHollyDev::class, 'binance_check'])->name('binance_check');
 Route::match(['get', 'post'], '/binance_check_id', [ControllerHollyDev::class, 'binance_check_id'])->name('binance_check_id');
@@ -94,6 +107,14 @@ Route::match(['get', 'post'], '/binance_pay', [ControllerHollyDev::class, 'binan
 //Route::match(['get', 'post'], '/apiserviceshistorial', [ControllerHollyDev::class, 'apiserviceshistorial']);
 Route::get('/form', [OCRController::class, 'form'])->name('ocr.form');
 Route::post('/ocr-form', [OCRController::class, 'extractFromForm'])->name('ocr.extract');
-Route::get('/passkey/register', [WebAuthnController::class, 'create'])->name('passkey.register');
-Route::post('/passkey/options', [WebAuthnController::class, 'options'])->name('passkey.options');
-Route::post('/passkey/verify', [WebAuthnController::class, 'verify'])->name('passkey.verify');
+
+
+// Rutas para Passkey
+Route::post('/passkey/register', function (AttestationRequest $request) {
+    return $request->toCreate();
+})->name('passkey.register');
+
+Route::post('/passkey/verify', function (AttestationRequest $request) {
+   return $request->login(Auth::all());
+})->name('passkey.verify');
+

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class ControllerHollyDev extends Controller
 {
@@ -441,8 +443,8 @@ class ControllerHollyDev extends Controller
             return response("Your Server IP " . $request->ip() . " Not Registered With us or Payment are pending si About payment Is here Binance ID : 42017699 for $50 usdt for year or $10 usdt for month and later Please Contact", 401);
         }
         // Usa variables de entorno
-        $apiKey = env('BINANCE_API_KEY');
-        $secretKey = env('BINANCE_SECRET_KEY');
+        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $secretKey = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         // Parámetros base
         $params = [
             'timestamp' => round(microtime(true) * 1000),
@@ -459,7 +461,7 @@ class ControllerHollyDev extends Controller
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'X-MBX-APIKEY: ' . $apiKey
+         'X-MBX-APIKEY: ' . trim($apiKey) // OJO: trim() para quitar espacios
         ]);
 
         $response = curl_exec($ch);
@@ -563,7 +565,7 @@ class ControllerHollyDev extends Controller
         curl_close($ch);
 
         $data = json_decode($response, true);
- dd($data);
+        dd($data);
         // Manejar errores de la API de Binance
         if (isset($data['code']) && $data['code'] < 0) {
             return response()->json([
@@ -636,7 +638,6 @@ class ControllerHollyDev extends Controller
         curl_setopt($ch, CURLOPT_POSTFIELDS, $bodyJson);
 
         $response = curl_exec($ch);
-        dd($response);
         curl_close($ch);
 
         $data = json_decode($response, true);
@@ -803,6 +804,102 @@ class ControllerHollyDev extends Controller
 
         return back()->with('error', 'No se encontró la transacción con ese Binance ID.');
     }
+    /*
+        public function zeta(Request $request){
 
+            return back()->with('success', '¡Operación completada exitosamente!')->with('swal', [
+                'type' => 'success',
+                'title' => 'Éxito',
+                'text' => 'Los créditos se acreditarán automáticamente en cuanto se valide el pago.'
+            ]);
+        }
 
+    */
+    public function processPayment(Request $request)
+    {
+        // Validación
+        $validated = $request->validate([
+            'amount' => 'required|numeric',
+            'email' => 'required|email',
+            'concept' => 'nullable|string',
+            'screenshot' => 'required|image|max:5120', // Máx 5MB
+        ]);
+
+        try {
+            // Guardar la imagen temporalmente en el disco público
+            $image = $request->file('screenshot');
+            $imageName = 'temp_' . time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('temp', $imageName, 'public');
+
+            if (!$imagePath) {
+                throw new \Exception('Error al guardar la imagen');
+            }
+
+            // Obtener la ruta absoluta de la imagen
+            $absolutePath = storage_path('app/public/' . $imagePath);
+
+            if (!file_exists($absolutePath)) {
+                throw new \Exception('La imagen no se encontró en la ruta especificada');
+            }
+
+            // Enviar a Telegram
+            $response = $this->sendToTelegram(
+                $validated['amount'],
+                $validated['email'],
+                $validated['concept'] ?? 'Sin concepto',
+                $absolutePath
+            );
+
+            // Eliminar la imagen temporal (ahora desde el disco público)
+            Storage::disk('public')->delete($imagePath);
+
+            return response()->json([
+                'success' => $response->successful(),
+                'message' => $response->successful()
+                    ? 'Comprobante enviado correctamente'
+                    : 'Error al enviar el comprobante'
+            ]);
+
+        } catch (\Exception $e) {
+            // Limpieza en caso de error
+            if (isset($imagePath)) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function sendToTelegram($amount, $email, $concept, $absolutePath)
+    {
+        $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
+        $chatId = "142398483";
+
+        // Mensaje de texto
+        $message = "💰 *Nuevo Pago Automático* 💰\n\n"
+            . "➖ *Monto:* $" . number_format($amount, 2) . "\n"
+            . "➖ *Email:* " . $email . "\n"
+            . "➖ *Concepto:* " . $concept . "\n\n"
+            . "⏱ *Fecha:* " . now()->format('d/m/Y H:i:s');
+
+        // Primero enviar el mensaje de texto
+        Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+            'chat_id' => $chatId,
+            'text' => $message,
+            'parse_mode' => 'Markdown'
+        ]);
+
+        // Luego enviar la imagen
+        return Http::attach(
+            'photo',
+            file_get_contents($absolutePath),
+            'comprobante.jpg'
+        )->post("https://api.telegram.org/bot{$botToken}/sendPhoto", [
+                    'chat_id' => $chatId,
+                    'caption' => 'Comprobante de pago'
+                ]);
+    }
 }
