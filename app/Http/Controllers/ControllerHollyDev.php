@@ -245,7 +245,7 @@ class ControllerHollyDev extends Controller
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-         'X-MBX-APIKEY: ' . trim($apiKey) // OJO: trim() para quitar espacios
+            'X-MBX-APIKEY: ' . trim($apiKey) // OJO: trim() para quitar espacios
         ]);
 
         $response = curl_exec($ch);

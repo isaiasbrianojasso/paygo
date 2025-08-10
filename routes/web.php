@@ -3,9 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ControllerHollyDev;
 use App\Http\Controllers\ControllerSMS;
-use App\Http\Controllers\ControllerAutoremove;
-use App\Http\Controllers\XiaomiController;
-use App\Http\Controllers\ControllerCall;
 use App\Http\Controllers\OCRController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\WebAuthnController;
@@ -13,12 +10,19 @@ use App\Models\User;
 use Laragear\WebAuthn\Http\Requests\AttestationRequest;
 use Laragear\WebAuthn\WebAuthn;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\ControllerAPI;
 use App\Http\Controllers\IntegrationCredentialController;
 // Esto registrará todas las rutas necesarias para WebAuthn
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Ruta de profile
+Route::get('/profile', function () {
+    return view('/profile/show');
+})->name('show');
+
 
 Route::middleware([
     'auth:sanctum',
@@ -94,7 +98,8 @@ Route::middleware([
     Route::get('/admin/user/', fn() => view('admin.user')->with('user',User::FindOrFail(base64_decode($_GET['token']))))->name('edit_usuario');
     Route::post('/users.create', [ControllerSMS::class, '  users.create']);
 
-
+//qr
+    Route::get('/qr', [ControllerAPI::class, 'qr']);
 
     //METODOS
     Route::post('/enviandoSms', [ControllerSMS::class, 'enviandoSms']);
