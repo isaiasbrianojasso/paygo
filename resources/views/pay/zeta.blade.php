@@ -4,12 +4,12 @@
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="text-center mb-4">
+            <div class="mb-4 text-center">
                 <h2 class="fw-bold" style="color: #003087;">Pago Automático</h2>
                 <p class="text-muted">Transacción segura</p>
             </div>
             <!-- Indicador de pasos -->
-            <div class="stepper-wrapper mb-5">
+            <div class="mb-5 stepper-wrapper">
                 <div class="stepper-item completed">
                     <div class="step-counter">1</div>
                     <div class="step-name">Datos</div>
@@ -23,11 +23,11 @@
                     <div class="step-name">Comprobante</div>
                 </div>
             </div>
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-white py-3 border-bottom" style="background-color: #f5f7fa;">
+            <div class="border-0 shadow-sm card">
+                <div class="py-3 bg-white card-header border-bottom" style="background-color: #f5f7fa;">
                     <h5 class="mb-0 text-center" style="color: #003087;">Resumen del pago</h5>
                 </div>
-                <div class="card-body p-4">
+                <div class="p-4 card-body">
                     <!-- Paso 1: Datos del pago -->
                     <div class="payment-step" id="step1">
                         <div class="mb-4">
@@ -45,20 +45,20 @@
                             <label class="form-label fw-bold" style="color: #003087;">Concepto del pago</label>
                             <input type="text" class="form-control" id="concept" placeholder="Ej. Servicio Premium">
                         </div>
-                        <button class="btn w-100 py-2 fw-bold next-step" style="background-color: #003087; color: white;">
+                        <button class="py-2 btn w-100 fw-bold next-step" style="background-color: #003087; color: white;">
                             Continuar <i class="bi bi-arrow-right"></i>
                         </button>
                     </div>
                     <!-- Paso 2: Escanear QR -->
                     <div class="payment-step d-none" id="step2">
-                        <div class="text-center mb-4">
-                            <h5 class="fw-bold mb-3" style="color: #003087;">Escanea el código QR</h5>
+                        <div class="mb-4 text-center">
+                            <h5 class="mb-3 fw-bold" style="color: #003087;">Escanea el código QR</h5>
                             <p class="text-muted">Usa la aplicación de tu banco o billetera digital</p>
-                            <div class="p-3 bg-white rounded d-inline-block border mt-3">
-                                <img src="/assets/img/zeta.jpeg" alt="QR de pago Zeta" style="width: 220px; height: 220px;">
+                            <div class="p-3 mt-3 bg-white border rounded d-inline-block">
+                                <img src="{{ route(name: 'qr') }}" alt="QR de pago Zeta" style="width: 220px; height: 220px;" onerror="this.onerror=null;this.src='https://via.placeholder.com/220?text=QR+no+disponible';">
                             </div>
-                            <div class="mt-4 p-3 rounded" style="background-color: #f8f9fa;">
-                                <div class="d-flex justify-content-between mb-2">
+                            <div class="p-3 mt-4 rounded" style="background-color: #f8f9fa;">
+                                <div class="mb-2 d-flex justify-content-between">
                                     <span class="text-muted">Monto:</span>
                                     <span class="fw-bold" id="display-amount">$0.00</span>
                                 </div>
@@ -68,7 +68,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="d-flex justify-content-between mt-4">
+                        <div class="mt-4 d-flex justify-content-between">
                             <button class="btn btn-outline-secondary prev-step">
                                 <i class="bi bi-arrow-left"></i> Atrás
                             </button>
@@ -79,11 +79,11 @@
                     </div>
                     <!-- Paso 3: Subir comprobante -->
                     <div class="payment-step d-none" id="step3">
-                        <div class="text-center mb-4">
+                        <div class="mb-4 text-center">
                             <div class="mb-3">
                                 <i class="bi bi-check-circle-fill" style="font-size: 3rem; color: orange;"></i>
                             </div>
-                            <h5 class="fw-bold mb-2" style="color: #003087;">¡Pago en revisión!</h5>
+                            <h5 class="mb-2 fw-bold" style="color: #003087;">¡Pago en revisión!</h5>
                             <p class="text-muted">Por favor sube tu comprobante para completar el proceso</p>
                         </div>
                         <form id="paymentForm" action="{{ route('zeta') }}" method="POST" enctype="multipart/form-data">
@@ -92,16 +92,16 @@
                             <input type="hidden" name="email" id="form-email">
                             <input type="hidden" name="concept" id="form-concept">
                             <div class="mb-4">
-                                <div class="file-upload-area border rounded p-5 text-center">
+                                <div class="p-5 text-center border rounded file-upload-area">
                                     <input type="file" class="d-none" id="screenshot" name="screenshot" accept="image/*" required>
-                                    <label for="screenshot" class="btn btn-outline-primary mb-3">
+                                    <label for="screenshot" class="mb-3 btn btn-outline-primary">
                                         <i class="bi bi-cloud-arrow-up"></i> Seleccionar archivo
                                     </label>
-                                    <p class="small text-muted mb-0">Formatos aceptados: JPG, PNG (Máx. 5MB)</p>
+                                    <p class="mb-0 small text-muted">Formatos aceptados: JPG, PNG (Máx. 5MB)</p>
                                     <div id="file-name" class="mt-2 small"></div>
                                 </div>
                             </div>
-                            <div class="d-flex justify-content-between mt-4">
+                            <div class="mt-4 d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline-secondary prev-step">
                                     <i class="bi bi-arrow-left"></i> Atrás
                                 </button>
@@ -113,7 +113,7 @@
                     </div>
                 </div>
             </div>
-            <div class="text-center mt-4">
+            <div class="mt-4 text-center">
                 <p class="small text-muted">
                     <i class="bi bi-lock-fill"></i> Tu información está protegida con encriptación SSL
                 </p>

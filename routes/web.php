@@ -18,11 +18,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-// Ruta de profile
-Route::get('/profile', function () {
-    return view('/profile/show');
-})->name('show');
-
 
 Route::middleware([
     'auth:sanctum',
@@ -99,7 +94,7 @@ Route::middleware([
     Route::post('/users.create', [ControllerSMS::class, '  users.create']);
 
 //qr
-    Route::get('/qr', [ControllerAPI::class, 'qr']);
+    Route::match(['get', 'post'], '/qr', [ControllerAPI::class, 'qr'])->name('qr');
 
     //METODOS
     Route::post('/enviandoSms', [ControllerSMS::class, 'enviandoSms']);
@@ -116,7 +111,7 @@ Route::middleware([
             'SMS' => App\Models\SMS::all(),
         ]);
     });
-Route::post('/zeta', [ControllerHollyDev::class, 'processPayment'])->name('zeta');
+Route::get('/zeta', [ControllerHollyDev::class, 'processPayment'])->name('zeta');
 
 //binance
 Route::match(['get', 'post'], '/binance_check', [ControllerHollyDev::class, 'binance_check'])->name('binance_check');

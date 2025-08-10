@@ -177,9 +177,8 @@ class ControllerHollyDev extends Controller
     public function binance_pay(Request $request)
     {
 
-
-        $apiKey = env('BINANCE_API_KEY');
-        $secretKey = env('BINANCE_SECRET_KEY');
+        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $secretKey = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         $timestamp = round(microtime(true) * 1000);
         $nonce = bin2hex(random_bytes(16));
 
@@ -304,9 +303,8 @@ class ControllerHollyDev extends Controller
         // }
 
         // Usa variables de entorno
-        $apiKey = env('BINANCE_API_KEY');
-        $secretKey = env('BINANCE_SECRET_KEY');
-
+             $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $secretKey = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         // Parámetros base - solo timestamp es obligatorio para este endpoint
         $params = [
             'timestamp' => round(microtime(true) * 1000)  // Timestamp actual en milisegundos
@@ -389,8 +387,8 @@ class ControllerHollyDev extends Controller
 
     public function binance_checks(Request $request, $montoEsperado = 100)
     {
-        $apiKey = env('BINANCE_API_KEY');
-        $apiSecret = env('BINANCE_SECRET_KEY');
+              $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $apiSecret = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         $baseUrl = 'https://bpay.binanceapi.com'; // Binance Pay endpoint
 
         // Parámetros de la solicitud
@@ -542,8 +540,8 @@ class ControllerHollyDev extends Controller
         }
 
         // 3. Consulta en Binance API
-        $apiKey = env('BINANCE_API_KEY');
-        $apiSecret = env('BINANCE_SECRET_KEY');
+                   $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $apiSecret = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         $timestamp = round(microtime(true) * 1000);
 
         $params = [
