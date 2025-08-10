@@ -16,6 +16,7 @@ use Laragear\WebAuthn\WebAuthnAuthentication;
 
 class User extends Authenticatable implements WebAuthnAuthenticatable
 {
+
     use WebAuthnAuthentication;
     use HasApiTokens;
 
@@ -78,8 +79,16 @@ class User extends Authenticatable implements WebAuthnAuthenticatable
         ];
     }
     public function getAuthIdentifier()
-{
-    return (string) $this->getKey();
-}
+    {
+        return (string) $this->getKey();
+    }
+
+        /**
+     * Get the integration credential associated with the user.
+     */
+    public function integrationCredential()
+    {
+        return $this->hasOne(IntegrationCredential::class);
+    }
 
 }

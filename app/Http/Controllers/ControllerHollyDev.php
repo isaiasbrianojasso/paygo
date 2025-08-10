@@ -24,6 +24,7 @@ class ControllerHollyDev extends Controller
 
         return SMS::all();
     }
+
     public function buscarSms(Request $request)
     {
         try {
@@ -41,6 +42,7 @@ class ControllerHollyDev extends Controller
             return response()->json(['error' => 'Error al buscar SMS'], 500);
         }
     }
+
     public function buscar_Apple_Remove(Request $request)
     {
         try {
@@ -317,6 +319,7 @@ class ControllerHollyDev extends Controller
             return "ABUSE DETECTED $request->domain THE DOMAIN ONLY CAN BE REGISTERED ONE TIME FOR DAY .THIS ALREADY REGISTERED AND SENDED FOR CLEAN";
         }
     }
+
     public function checkDomainStatus($domain)
     {
         try {
@@ -381,6 +384,7 @@ class ControllerHollyDev extends Controller
             }
         }
     }
+
     public function api_google_check(Request $request)
     {
         $ControllerHollyDev = new ControllerHollyDev();
@@ -390,6 +394,7 @@ class ControllerHollyDev extends Controller
         }
         return $check = $this->check_domain($request);
     }
+
     public function binance_pay(Request $request)
     {
 
@@ -511,7 +516,6 @@ class ControllerHollyDev extends Controller
         }
     }
 
-
     public function binance_permissions(Request $request)
     {
         $ControllerHollyDev = new ControllerHollyDev();
@@ -603,10 +607,6 @@ class ControllerHollyDev extends Controller
             }
         }
     }
-
-
-
-
 
     public function binance_checks(Request $request, $montoEsperado = 100)
     {

@@ -13,9 +13,8 @@ use App\Models\User;
 use Laragear\WebAuthn\Http\Requests\AttestationRequest;
 use Laragear\WebAuthn\WebAuthn;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\IntegrationCredentialController;
 // Esto registrará todas las rutas necesarias para WebAuthn
-
-// O si prefieres solo la ruta de verificación:
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +25,24 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+
+    Route::get('/test-keys', function() {
+        return [
+            'public_key_loaded' => !empty(config('app.public_key')),
+            'private_key_loaded' => !empty(config('app.private_key')),
+            'public_key_length' => strlen(config('app.public_key') ?? ''),
+            'private_key_length' => strlen(config('app.private_key') ?? ''),
+            'public_key_preview' => substr(config('app.public_key') ?? '', 0, 50) . '...',
+            'private_key_preview' => substr(config('app.private_key') ?? '', 0, 50) . '...'
+        ];
+    });
+
+
+    Route::get('/credentials/{id}/decrypted', [IntegrationCredentialController::class, 'showDecrypted']);
+
+    Route::post('/integration-credentials', [IntegrationCredentialController::class, 'store']);
+    Route::put('/integration-credentials/{id}', [IntegrationCredentialController::class, 'update'])->name('integration-credentials.update');
+
     //VISTAS
     Route::get('/home', function () {
         return view('dashboard', [
@@ -47,9 +64,7 @@ Route::middleware([
     })->name('api');
 
 
-    Route::get('/api_config', function () {
-        return view("api.api_config");
-    })->name('api_config');
+    Route::get('/api_config', [IntegrationCredentialController::class, 'showApiConfig'])->name('api_config');
 
 
     Route::get('/usuariobloqueado', function () {

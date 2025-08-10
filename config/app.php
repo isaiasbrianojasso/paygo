@@ -15,6 +15,9 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'public_key' => env('RSA_PUBLIC_KEY', ''),
+    'private_key' => env('RSA_PRIVATE_KEY', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
