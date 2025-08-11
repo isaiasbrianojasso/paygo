@@ -10,12 +10,14 @@ class CredentialService
     public function store(
         int|string $userId,
         string $urlWebhook,
+        string $token_telegram,
         string $chatId,
         ?string $apiKey,
         ?string $apiSecret
     ): IntegrationCredential {
         $payload = [
             'user_id'     => $userId,
+            'token_telegram' => $token_telegram,
             'url_webhook' => $urlWebhook,
             'chat_id'     => $chatId,
             'key_version' => 1,
@@ -59,10 +61,11 @@ class CredentialService
 
     /**
      * Update an existing integration credential
-     * 
+     *
      * @param int|string $id
      * @param string $urlWebhook
      * @param string $chatId
+     * @param string|null $token_telegram If null or empty, the existing value will be preserved
      * @param string|null $apiKey If null or empty, the existing value will be preserved
      * @param string|null $apiSecret If null or empty, the existing value will be preserved
      * @return IntegrationCredential
@@ -70,16 +73,17 @@ class CredentialService
     public function update(
         int|string $id,
         string $urlWebhook,
+        string $token_telegram,
         string $chatId,
         ?string $apiKey,
         ?string $apiSecret
     ): IntegrationCredential {
         $credential = IntegrationCredential::findOrFail($id);
-        
+
         // Always update these fields
         $credential->url_webhook = $urlWebhook;
         $credential->chat_id = $chatId;
-        
+        $credential->token_telegram = $token_telegram;
         // Only update API key if a new one is provided
         if ($apiKey !== null && $apiKey !== '') {
             $credential->api_key_hash = Hash::make($apiKey);
@@ -87,14 +91,14 @@ class CredentialService
             $credential->api_key_enc = $apiKey; // cast encrypted
             $credential->last4 = mb_substr($apiKey, -4);
         }
-        
+
         // Only update API secret if a new one is provided
         if ($apiSecret !== null && $apiSecret !== '') {
             $credential->api_secret_enc = $apiSecret; // cast encrypted
         }
-        
+
         $credential->save();
-        
+
         return $credential->fresh();
     }
 }

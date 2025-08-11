@@ -17,8 +17,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
             // Datos requeridos
-            $table->string('url_webhook', 2048);
-            $table->string('chat_id', 128);
+            $table->string('url_webhook', 2048)->nullable();
+            $table->string('chat_id', 128)->nullable();
+            $table->string('token_telegram', 128)->nullable();
 
             // API key/secret opcionales
             $table->string('api_key_hash', 255)->nullable();

@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\CredentialService;
 use App\Models\SMS;
 use App\Models\IP;
 use App\Models\AUTOREMOVE;
 use App\Models\USER;
+use \App\Models\IntegrationCredential;
 use App\Http\Controllers\ControllerAutoremove;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -220,13 +222,12 @@ class ControllerHollyDev extends Controller
 
     public function binance_check(Request $request)
     {
-        $ControllerHollyDev = new ControllerHollyDev();
-        $auth = $ControllerHollyDev->auth($request, 'binance_check');
-        if (!$auth) {
-            return response("Your Server IP " . $request->ip() . " Not Registered With us or Payment are pending si About payment Is here Binance ID : 42017699 for $50 usdt for year or $10 usdt for month and later Please Contact", 401);
-        }
-        // Usa variables de entorno
-        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+
+   //$response = app('App\Http\Controllers\IntegrationCredentialController')->showDecrypted(Auth::user()->id);
+
+    //$data = json_decode($response->getContent());
+
+             $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
         $secretKey = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         // Parámetros base
         $params = [
@@ -387,8 +388,12 @@ class ControllerHollyDev extends Controller
 
     public function binance_checks(Request $request, $montoEsperado = 100)
     {
-              $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $integration = IntegrationCredential::where('user_id', Auth::id())->first();
+dd($integration );
+        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
         $apiSecret = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
+
+
         $baseUrl = 'https://bpay.binanceapi.com'; // Binance Pay endpoint
 
         // Parámetros de la solicitud

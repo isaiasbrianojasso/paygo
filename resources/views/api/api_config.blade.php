@@ -5,26 +5,26 @@ $current = url()->current();
 @endphp
 <!-- BEGIN #content -->
 <div id="content" class="app-content">
-    <div class="d-flex align-items-center mb-3">
+    <div class="mb-3 d-flex align-items-center">
         <div>
             <ul class="breadcrumb">
                 <li class="breadcrumb-item active">Configuración API</li>
             </ul>
-            <h1 class="page-header mb-0">Tus Datos</h1>
+            <h1 class="mb-0 page-header">Tus Datos</h1>
         </div>
     </div>
 
     <!-- Primer Formulario - Credenciales de API -->
-    <div class="card border-0 mb-4">
+    <div class="mb-4 border-0 card">
         <div class="panel">
-            <div class="panel-heading bg-red-700 text-white">Credenciales de API</div>
+            <div class="text-white bg-red-700 panel-heading">Credenciales de API</div>
         </div>
         <div class="card-body">
             <form id="apiCredentialsForm">
                 @csrf
                 <div class="row">
-                    <div class="col-md-8 mx-auto">
-                        <div class="input-group mb-3">
+                    <div class="mx-auto col-md-8">
+                        <div class="mb-3 input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">TOKEN</span>
                             </div>
@@ -48,9 +48,9 @@ $current = url()->current();
     </div>
 
     <!-- Segundo Formulario - Configuración de Integración -->
-    <div class="card border-0">
+    <div class="border-0 card">
         <div class="panel">
-            <div class="panel-heading bg-blue-700 text-white">Configuración de Integración</div>
+            <div class="text-white bg-blue-700 panel-heading">Configuración de Integración</div>
         </div>
         <div class="card-body">
             @if(session('success'))
@@ -72,7 +72,7 @@ $current = url()->current();
             @php
                 $isEdit = isset($credential) && $credential !== null;
             @endphp
-            
+
             <form id="integrationForm" action="{{ $isEdit ? route('integration-credentials.update', $credential->id) : url('/integration-credentials') }}" method="POST">
                 @csrf
                 @if($isEdit)
@@ -81,9 +81,9 @@ $current = url()->current();
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
 
                 <div class="row">
-                    <div class="col-md-8 mx-auto">
+                    <div class="mx-auto col-md-8">
                         <!-- Chat ID -->
-                        <div class="form-group mb-3">
+                        <div class="mb-3 form-group">
                             <label for="chat_id"><i class="fab fa-telegram"></i> Chat ID</label>
                             <input type="text" class="form-control @error('chat_id') is-invalid @enderror"
                                    id="chat_id" name="chat_id"
@@ -95,9 +95,9 @@ $current = url()->current();
                                 </span>
                             @enderror
                         </div>
-
+<hr>
                         <!-- Webhook URL -->
-                        <div class="form-group mb-3">
+                        <div class="mb-3 form-group">
                             <label for="url_webhook"><i class="fas fa-link"></i> Webhook URL</label>
                             <div class="input-group">
                                 <input type="url" class="form-control @error('url_webhook') is-invalid @enderror"
@@ -116,10 +116,30 @@ $current = url()->current();
                                 @enderror
                             </div>
                         </div>
+<hr>
+<div class="mb-3 form-group">
+                            <label for="token_telegram"><i class="fas fa-link"></i> Token Telegram</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control @error('token_telegram') is-invalid @enderror"
+                                       id="token_telegram" name="token_telegram"
+                                       value="{{ old('token_telegram', $token_telegram ?? '') }}"
+                                       placeholder="https://tudominio.com/webhook" required>
+                                <div class="input-group-append">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="copiarAlPortapapeles('token_telegram')">
+                                        <i class="fas fa-copy"></i>
+                                    </button>
+                                </div>
+                                @error('token_telegram')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
 
                         <!-- API Key -->
-                        <div class="form-group mb-3">
-                            <label for="api_key"><i class="fas fa-key"></i> API Key (Opcional)</label>
+                        <div class="mb-3 form-group">
+                            <label for="api_key"><i class="fas fa-key"></i> API Key Binance (Opcional)</label>
                             <div class="input-group">
                                 <input type="password" class="form-control @error('api_key') is-invalid @enderror"
                                        id="api_key" name="api_key"
@@ -139,8 +159,8 @@ $current = url()->current();
                         </div>
 
                         <!-- API Secret -->
-                        <div class="form-group mb-4">
-                            <label for="api_secret"><i class="fas fa-lock"></i> API Secret (Opcional)</label>
+                        <div class="mb-4 form-group">
+                            <label for="api_secret"><i class="fas fa-lock"></i> API Secret Binance (Opcional)</label>
                             <div class="input-group">
                                 <input type="password" class="form-control @error('api_secret') is-invalid @enderror"
                                        id="api_secret" name="api_secret"
