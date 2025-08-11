@@ -87,6 +87,7 @@ class IntegrationCredentialController extends Controller
     public function showDecrypted(string $id)
     {
         $cred = IntegrationCredential::findOrFail($id);
+  //$cred = IntegrationCredential::where('user_id', $id)->firstOrFail();
         return response()->json([
             'id'            => $cred->id,
             'user_id'       => $cred->user_id,

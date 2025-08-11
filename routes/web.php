@@ -74,6 +74,10 @@ Route::middleware([
         return view("api.payment_check_api");
     })->name('payment_check_api');
 
+    Route::get('/api_binance_id', function () {
+        return view("api.api_binance_id");
+    })->name('api_binance_id');
+
     Route::get('/payment_check', function () {
         return view("payment_check");
     })->name('payment_check');
@@ -115,6 +119,8 @@ Route::get('/zeta', [ControllerHollyDev::class, 'processPayment'])->name('zeta')
 
 //binance
 Route::match(['get', 'post'], '/binance_check', [ControllerHollyDev::class, 'binance_check'])->name('binance_check');
+Route::match(['get', 'post'], '/binance_id', [ControllerHollyDev::class, 'binance_id'])->name('binance_id');
+
 Route::match(['get', 'post'], '/binance_check_id', [ControllerHollyDev::class, 'binance_check_id'])->name('binance_check_id');
 
 

@@ -586,17 +586,55 @@ dd($integration );
 
         return back()->with('error', 'No se encontró la transacción con ese Binance ID.');
     }
-    /*
-        public function zeta(Request $request){
 
-            return back()->with('success', '¡Operación completada exitosamente!')->with('swal', [
-                'type' => 'success',
-                'title' => 'Éxito',
-                'text' => 'Los créditos se acreditarán automáticamente en cuanto se valide el pago.'
-            ]);
+public function binance_id(Request $request)
+    {
+
+
+        // 2. Validar que tengamos el txId final
+        if (!$request->has('orderId')) {
+            echo 'Falta el parámetro orderId';
+        }
+        // 3. Consulta en Binance API
+        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $apiSecret = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
+        $timestamp = round(microtime(true) * 1000);
+        $params = [
+            'orderId' => $request->orderId,
+            'note' => $request->note,
+            'timestamp' => $timestamp
+        ];
+
+        $queryString = http_build_query($params);
+        $signature = hash_hmac('sha256', $queryString, $apiSecret);
+        $url = "https://api.binance.com/sapi/v1/pay/transactions?$queryString&signature=$signature";
+
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-MBX-APIKEY: $apiKey"]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        $data = json_decode($response, true);
+
+        // 4. Buscar la transacción específica
+        if (isset($data['data']) && is_array($data['data'])) {
+            foreach ($data['data'] as $transaction) {
+                if ($transaction['orderId'] == $request->orderId) {
+                    $mensaje = "Binance ID: " . ($transaction['payerInfo']['binanceId'] ?? 'N/A') . " | " .
+                        "Nombre: " . ($transaction['payerInfo']['name'] ?? 'No disponible') . " | " .
+                        "Monto: " . ($transaction['amount'] ?? 0) . " " . ($transaction['currency'] ?? 'USDT') . " | " .
+                        "Transaction ID: " . ($transaction['transactionId'] ?? 'N/A');
+
+                    return $mensaje;
+                }
+            }
         }
 
-    */
+        echo 'No se encontró la transacción con ese Binance ID.';
+
+    }
+
     public function processPayment(Request $request)
     {
         // Validación
