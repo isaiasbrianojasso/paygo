@@ -106,14 +106,15 @@ $google = IP::where( 'service', 'google_maps')->where('user_id',Auth::User()->id
                 </a>
             </div>
             <!-- Historial  api_binance_id-->
+            <!--
             <div class="bg-white menu-header text-dark">HISTORY</div>
             <div class="menu-item @if(preg_match('/\bhistorialcall\b/i', $current)) active @endif">
                 <a href="/historialCall" class="menu-link">
                     <div class="menu-icon"><i class="fa fa-list"></i></div>
                     <div class="menu-text">Payments <i class="fas fa-history "></i></div>
                 </a>
-            </div>
-
+            </div>-->
+<!--
             <div class="bg-white menu-header text-dark">SHOPPING</div>
 
             <div class="menu-item @if(preg_match('/\bapiserviceshistorial\b/i', $current)) active @endif">
@@ -125,7 +126,7 @@ $google = IP::where( 'service', 'google_maps')->where('user_id',Auth::User()->id
                         </svg></div>
                     <div class="menu-text text-warning">SERVICES SUBSCRIPTED</div>
                 </a>
-            </div>
+            </div>-->
             <div class="bg-white menu-header text-dark">Config</div>
 
             <div class="menu-item @if(preg_match('/\bapi_config\b/i', $current)) active @endif">

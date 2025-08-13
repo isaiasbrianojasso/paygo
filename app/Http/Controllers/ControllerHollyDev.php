@@ -591,6 +591,9 @@ class ControllerHollyDev extends Controller
     public function binance_id(Request $request)
     {
 
+
+
+
         $user = User::where('api_token', $request->api_key)->first();
 
         try {
@@ -604,9 +607,10 @@ class ControllerHollyDev extends Controller
                     return response()->json(['error' => 'Api key don´t exist.'], 404);
                 }
                 // 2. Validar que tengamos el txId final
+                /*
                 if (!$request->has('orderId')) {
                     echo 'Falta el parámetro orderId';
-                }
+                }*/
 
                 $timestamp = round(microtime(true) * 1000);
                 $params = [
@@ -643,6 +647,7 @@ class ControllerHollyDev extends Controller
                                 'moneda_binance' => $transaction['currency'] ?? 'USDT',
                                 'transaction_id_binance' => $transaction['transactionId'] ?? 'N/A'
                             ];
+
                             return $this->validatePayment($binance, $request, $user);
                             // Si lo vas a devolver como respuesta JSON en Laravel
                             //  return response()->json($mensaje, 200);
@@ -665,7 +670,7 @@ class ControllerHollyDev extends Controller
         if ($detalleExistente) {
             // Caso 1: Ya estaba aprobada
             if ($detalleExistente->status === 'aprobado') {
-                return "hack";
+                return "hack 1";
             }
 
             // Caso 2: Estaba declinada, pero ahora el monto es correcto
@@ -678,7 +683,7 @@ class ControllerHollyDev extends Controller
             }
 
             // Caso 3: Estaba declinada y sigue con monto incorrecto
-            return "hack";
+            return "hack 3";
         }
 
         // Si no existe la transacción → crear nueva
@@ -701,13 +706,13 @@ class ControllerHollyDev extends Controller
         // Aprobar solo si el monto es correcto
         if ($binance['monto_binance'] == $request->monto) {
             $detalle->status = 'aprobado';
-             $status = 'aprobado';
+            $status = 'aprobado';
             $this->webhook($request, $binance, $user, $status);
             $detalle->save();
             return "aprobado";
         } else {
             $detalle->status = 'declinado';
-             $status = 'declinado';
+            $status = 'declinado';
             $detalle->save();
             $this->webhook($request, $binance, $user, $status);
             return "declinado";
@@ -741,9 +746,9 @@ class ControllerHollyDev extends Controller
 
         // Verifica la respuesta
         if ($response->successful()) {
-      //      echo 'Respuesta: ' . $response->body();
+            //      echo 'Respuesta: ' . $response->body();
         } else {
-        //    echo 'Error: ' . $response->status() . ' - ' . $response->body();
+            //    echo 'Error: ' . $response->status() . ' - ' . $response->body();
         }
         // Aquí puedes implementar la lógica para manejar el webhook
         // Por ejemplo, recibir datos de Binance y procesarlos
@@ -766,9 +771,15 @@ class ControllerHollyDev extends Controller
             'api_key' => 'nullable|string',
             'screenshot' => 'required|image|max:5120', // Máx 5MB
         ]);
-          $apiKey = $request->input('api_key');
 
-        $resp=$this->binance_id($request);
+        $apiKey = $request->input(key: 'api_key');
+
+        $user = User::where('api_token', $apiKey)->first(); ;
+
+        $request->orderId = $validated['concept'];
+        $request->monto = $validated['amount'];
+
+        $resp = $this->binance_id($request);
 
         try {
             // Guardar la imagen temporalmente en el disco público
@@ -791,19 +802,42 @@ class ControllerHollyDev extends Controller
             $response = $this->sendToTelegram(
                 $validated['amount'],
                 $validated['email'],
-                $validated['concept'] ?? 'Sin concepto',
-                $absolutePath
+                $validated['concept'],
+                $absolutePath,
+                $resp,
+                $user,
+
             );
 
             // Eliminar la imagen temporal (ahora desde el disco público)
             Storage::disk('public')->delete($imagePath);
+            if ($resp == "aprobado") {
 
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Pago Recibido'
+                ], 200);
+
+            } elseif ($resp == "declinado") {
+                return response()->json([
+                    'success' => false,
+                    'message' => $resp
+                ], 200);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => $resp
+                ], 200);
+            }
+
+
+            /*
             return response()->json([
                 'success' => $response->successful(),
                 'message' => $response->successful()
                     ? 'Comprobante enviado correctamente'
                     : 'Error al enviar el comprobante'
-            ]);
+            ]);*/
 
         } catch (\Exception $e) {
             // Limpieza en caso de error
@@ -813,22 +847,40 @@ class ControllerHollyDev extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => $resp
             ], 500);
         }
     }
 
-    private function sendToTelegram($amount, $email, $concept, $absolutePath)
+    private function sendToTelegram($amount, $email, $concept, $absolutePath, $resp,$user)
     {
-        $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
-        $chatId = "142398483";
+     //   $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
+       // $chatId = "142398483";
+
+        $integration = IntegrationCredential::where('user_id', $user->id)->first();
+        $botToken = $integration->token_telegram;
+        $chatId =  $integration->chat_id;
+
+        // Verificar si el botToken y chatId están configurados
+        if (!$botToken || !$chatId) {
+            throw new \Exception('Bot token o chat ID no configurados');
+        }
+        // Determinar el estado
+        if ($resp == 'aprobado') {
+            $status = 'Aprobado';
+        } elseif ($resp == 'declinado') {
+            $status = 'Declinado no existe el pago o monto incorrecto';
+        } else {
+            $status = 'Pendiente o posiblemente ya habia sido Aprobado';
+        }
 
         // Mensaje de texto
-        $message = "💰 *Nuevo Pago Automático* 💰\n\n"
+        $message = "💰 *Pago {$status}* 💰\n\n"
             . "➖ *Monto:* $" . number_format($amount, 2) . "\n"
             . "➖ *Email:* " . $email . "\n"
-            . "➖ *Concepto:* " . $concept . "\n\n"
-            . "⏱ *Fecha:* " . now()->format('d/m/Y H:i:s');
+            . "➖ *transactionId:* " . $concept . "\n\n"
+            . "⏱ *Fecha:* " . now()->format('d/m/Y H:i:s') . "\n"
+            . "➖ *Estado:* " . $status . "\n\n";
 
         // Primero enviar el mensaje de texto
         Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
@@ -844,7 +896,8 @@ class ControllerHollyDev extends Controller
             'comprobante.jpg'
         )->post("https://api.telegram.org/bot{$botToken}/sendPhoto", [
                     'chat_id' => $chatId,
-                    'caption' => 'Comprobante de pago'
+                    'caption' => "Comprobante de pago - {$status}"
                 ]);
+
     }
 }
