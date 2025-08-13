@@ -17,52 +17,77 @@
         <div class="mt-3 mb-3 row">
             <div class="mx-auto col-10">
                 <h5 class="font-mono text-orange-600 usoAPI" >
-                    Selecciona una opción para ver el código.
+                    API Endpoint Example
                 </h5>
             </div>
         </div>
 
         <div class="mt-3 mb-5 row">
             <div class="mx-auto col-10">
-                <div class="apiResponse alert alert-secondary" style="display: none;">
-                    <strong>Resultado:</strong>
-                    <pre class="mb-0 text-success">{"response":"Dep\u00f3sito recibido:\nID: 4472694833681092866\nMonto: 30 USDT (TRX)\nTxID: Off-chain transfer 255246137765\nDirecci\u00f3n: TN2bgYx4PcwMQeGqBDWu894CgHcwkfFJMa\nConfirmaciones: 1\/1"}</pre>
+                <div class="apiResponse alert alert-secondary">
+                    <strong>Request:</strong>
+                    <pre class="mb-0 text-primary">GET {{ $url }}/binance_id?api_key={{ $apiToken }}&orderId=1234567890&identifier=Test%20Transaction&servicio=agregar_creditos&monto=1234</pre>
+
+                    <strong class="mt-3">Response:</strong>
+                    <pre class="mb-0 text-success">aprobado</pre>
+                    <pre class="mb-0 text-warning">declinado</pre>
+                    <pre class="mb-0 text-danger">hack</pre>
+
                 </div>
             </div>
         </div>
 
-        <script>
-                const baseUrl = "{{ $url }}";
-                const apiToken = "{{ $apiToken }}";
-                let endpoint = "";
-                let resultadoSimulado = "";
+        <div class="mt-3 mb-3 row">
+            <div class="mx-auto col-10">
+                <h5 class="font-mono text-orange-600">
+                    PHP Implementation Example:
+                </h5>
+                <pre class="bg-light p-3 rounded">
+$apiUrl = "{{ $url }}/binance_id";
+$apiKey = "{{ $apiToken }}";
 
+$params = [
+    'api_key' => $apiKey,
+    'orderId' => '1234567890',
+    'identifier' => 'Test Transaction',
+    'servicio' => 'agregar_creditos',
+    'monto' => 1234
+];
 
-                const fullUrl = `${baseUrl}/binance_id?api_key=${apiToken}&orderId=1234567890&note=Test%20Transaction&servicio=agregar_1234_creditos`;
-                const codeExample = `
-$url = "${fullUrl}";
-$curl = curl_init($url);
-curl_setopt($curl, CURLOPT_URL, $url);
-curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+$queryString = http_build_query($params);
+$requestUrl = $apiUrl . '?' . $queryString;
 
-// for debug only!
-curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
-curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $requestUrl);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    'Accept: application/json'
+]);
 
-$resp = curl_exec($curl);
-curl_close($curl);
-if ($resp) {
-    return $resp;
-} else {
-    // error
+// For development only - remove in production
+curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+$response = curl_exec($ch);
+if (curl_errno($ch)) {
+    $error = curl_error($ch);
+    // Handle error
 }
-                `;
 
-                document.querySelector('.usoAPI').innerHTML = `<pre>${codeExample}</pre>`;
-                document.querySelector('.apiResponse').style.display = 'block';
-                document.getElementById('resultado_api').textContent = resultadoSimulado;
+curl_close($ch);
 
-        </script>
+// Process response
+$result = json_decode($response, true);
+if ($result && isset($result['status']) && $result['status'] === 'success') {
+    // Transaction successful
+    $transactionId = $result['data']['transaction_id'];
+    // Process further...
+} else {
+    // Handle API error
+    $error = $result['message'] ?? 'Unknown error';
+}</pre>
+            </div>
+        </div>
     </div>
 </div>
 

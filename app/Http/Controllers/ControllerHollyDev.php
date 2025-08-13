@@ -670,8 +670,9 @@ class ControllerHollyDev extends Controller
             // Caso 2: Estaba declinada, pero ahora el monto es correcto
             if ($detalleExistente->status === 'declinado' && $binance['monto_binance'] == $request->monto) {
                 $detalleExistente->status = 'aprobado';
+                $status = 'aprobado';
                 $detalleExistente->save();
-                $this->webhook($request, $detalleExistente, $user, $detalle->status);
+                $this->webhook($request, $detalleExistente, $user, $status);
                 return "aprobado";
             }
 
@@ -699,13 +700,15 @@ class ControllerHollyDev extends Controller
         // Aprobar solo si el monto es correcto
         if ($binance['monto_binance'] == $request->monto) {
             $detalle->status = 'aprobado';
-            $this->webhook($request, $binance, $user, $detalle->status);
+             $status = 'aprobado';
+            $this->webhook($request, $binance, $user, $status);
             $detalle->save();
             return "aprobado";
         } else {
             $detalle->status = 'declinado';
+             $status = 'declinado';
             $detalle->save();
-            $this->webhook($request, $binance, $user, $detalle->status);
+            $this->webhook($request, $binance, $user, $status);
             return "declinado";
         }
     }
