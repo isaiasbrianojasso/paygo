@@ -12,7 +12,10 @@ use Laragear\WebAuthn\WebAuthn;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ControllerAPI;
 use App\Http\Controllers\IntegrationCredentialController;
+use Illuminate\Http\Request;
+use \App\Models\IntegrationCredential;
 // Esto registrará todas las rutas necesarias para WebAuthn
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -110,12 +113,32 @@ Route::middleware([
     Route::match(['get', 'post'], '/regenerarCredenciales', [ControllerHollyDev::class, 'regenerarCredenciales']);
 });
 
- Route::get('/pay/zeta', function () {
-        return view('/pay/zeta', [
-            'SMS' => App\Models\SMS::all(),
-        ]);
-    });
-Route::get('/zeta', [ControllerHollyDev::class, 'processPayment'])->name('zeta');
+ Route::match(['get', 'post'],'/validatePay', function (Request $request) {
+    // Validate required parameters;
+    if (!$request->has('api_key')) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'API key parameter is required'
+        ], 400);
+    }
+
+    // Find user by API token
+    $user = User::where('api_token', $request->api_key)->first();
+
+
+    if (!$user) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid API key'
+        ], 401);
+    }
+  return view('validatePay.pay', [
+    'api_key' => $request->api_key
+]);
+
+});
+
+ Route::match(['get', 'post'],'/validatePay/actionPay.php', [ControllerHollyDev::class, 'processPayment'])->name('zeta');
 
 //binance
 Route::match(['get', 'post'], '/binance_check', [ControllerHollyDev::class, 'binance_check'])->name('binance_check');

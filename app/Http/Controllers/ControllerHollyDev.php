@@ -8,7 +8,7 @@ use App\Services\CredentialService;
 use App\Models\SMS;
 use App\Models\IP;
 use App\Models\AUTOREMOVE;
-use App\Models\USER;
+use App\Models\User;
 use \App\Models\IntegrationCredential;
 use App\Models\detalle_transaccion;
 use App\Http\Controllers\ControllerAutoremove;
@@ -592,6 +592,7 @@ class ControllerHollyDev extends Controller
     {
 
         $user = User::where('api_token', $request->api_key)->first();
+
         try {
             if (!$user) {
                 return response()->json(['error' => 'Api key dont exist.'], 404);
@@ -751,45 +752,23 @@ class ControllerHollyDev extends Controller
     }
 
 
-    private function sendToTelegram($amount, $email, $concept, $absolutePath)
-    {
-        $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
-        $chatId = "142398483";
-
-        // Mensaje de texto
-        $message = "💰 *Nuevo Pago Automático* 💰\n\n"
-            . "➖ *Monto:* $" . number_format($amount, 2) . "\n"
-            . "➖ *Email:* " . $email . "\n"
-            . "➖ *Concepto:* " . $concept . "\n\n"
-            . "⏱ *Fecha:* " . now()->format('d/m/Y H:i:s');
-
-        // Primero enviar el mensaje de texto
-        Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-            'chat_id' => $chatId,
-            'text' => $message,
-            'parse_mode' => 'Markdown'
-        ]);
-
-        // Luego enviar la imagen
-        return Http::attach(
-            'photo',
-            file_get_contents($absolutePath),
-            'comprobante.jpg'
-        )->post("https://api.telegram.org/bot{$botToken}/sendPhoto", [
-                    'chat_id' => $chatId,
-                    'caption' => 'Comprobante de pago'
-                ]);
-    }
 
     public function processPayment(Request $request)
     {
+
+
+
         // Validación
         $validated = $request->validate([
             'amount' => 'required|numeric',
             'email' => 'required|email',
             'concept' => 'nullable|string',
+            'api_key' => 'nullable|string',
             'screenshot' => 'required|image|max:5120', // Máx 5MB
         ]);
+          $apiKey = $request->input('api_key');
+
+        $resp=$this->binance_id($request);
 
         try {
             // Guardar la imagen temporalmente en el disco público
@@ -837,5 +816,35 @@ class ControllerHollyDev extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function sendToTelegram($amount, $email, $concept, $absolutePath)
+    {
+        $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
+        $chatId = "142398483";
+
+        // Mensaje de texto
+        $message = "💰 *Nuevo Pago Automático* 💰\n\n"
+            . "➖ *Monto:* $" . number_format($amount, 2) . "\n"
+            . "➖ *Email:* " . $email . "\n"
+            . "➖ *Concepto:* " . $concept . "\n\n"
+            . "⏱ *Fecha:* " . now()->format('d/m/Y H:i:s');
+
+        // Primero enviar el mensaje de texto
+        Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+            'chat_id' => $chatId,
+            'text' => $message,
+            'parse_mode' => 'Markdown'
+        ]);
+
+        // Luego enviar la imagen
+        return Http::attach(
+            'photo',
+            file_get_contents($absolutePath),
+            'comprobante.jpg'
+        )->post("https://api.telegram.org/bot{$botToken}/sendPhoto", [
+                    'chat_id' => $chatId,
+                    'caption' => 'Comprobante de pago'
+                ]);
     }
 }
