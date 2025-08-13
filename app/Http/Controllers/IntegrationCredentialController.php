@@ -22,7 +22,11 @@ class IntegrationCredentialController extends Controller
         // Prevenir duplicado de API key por usuario
         if (!empty($data['api_key']) &&
             $svc->existsByApiKeyForUser($data['user_id'], $data['api_key'])) {
-            return response()->json(['message' => 'API key ya registrada para este usuario'], 409);
+                /*
+            return response()->json(['message' => 'API key ya registrada para este usuario'], 409);*/
+
+        return redirect()->route('api_config')
+            ->with('success', 'Configuración actualizada exitosamente');
         }
 
         $cred = $svc->store(
@@ -33,13 +37,16 @@ class IntegrationCredentialController extends Controller
             $data['api_key'] ?? null,
             $data['api_secret'] ?? null
         );
-
+/*
         return response()->json([
             'id'         => $cred->id,
             'user_id'    => $cred->user_id,
             'last4'      => $cred->last4,
             'created_at' => $cred->created_at,
-        ], 201);
+        ], 201);*/
+
+        return redirect()->route('api_config')
+            ->with('success', 'Configuración actualizada exitosamente');
     }
 
     public function showApiConfig()

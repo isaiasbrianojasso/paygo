@@ -11,7 +11,7 @@
             <h1 class="mb-0 page-header">Todos Los pagos</h1>
         </div>
         <div class="ms-auto">
-            <a href="javascript:;" onclick="abrirEnviarSms()"
+            <a href="/payment_binance"
                 class="px-4 btn btn-primary btn-rounded rounded-pill "><svg xmlns="http://www.w3.org/2000/svg"
                     width="16" height="16" fill="currentColor" class="bi bi-chat-left-dots" viewBox="0 0 16 16">
                     <path
@@ -44,11 +44,11 @@
                     <table class="table mb-0 align-middle table-hover table-panel text-nowrap">
                         <thead>
                             <tr>
+                                <th>User Binance</th>
+                                <th>Banco</th>
                                 <th>Transaccion ID</th>
-                                <th>Origen</th>
-                                <th>Destino</th>
                                 <th>Monto</th>
-                                <th>Acreditado</th>
+                                <th>Status</th>
                                 <th>Fecha</th>
 
                             </tr>
@@ -63,26 +63,29 @@
                         <tbody id="filtradosms">
                             @foreach ($mensajes as $tabla)
                             <tr onclick='detailMessage(@json($tabla))'>
+                                @php
+
+                                @endphp
                                 <td>
-                                    <pre class="text-primary">{{ $tabla->trx }}</pre>
+                                    <pre class="text-primary">{{ $tabla->nombre_binance }}</pre>
                                 </td>
                                 <td>
-                                    <pre class="text-primary">{{ $tabla->cuenta_origen }}</pre>
+                                    <pre class="text-primary">{{ $tabla->banco }}</pre>
                                 </td>
                                 <td>
-                                    <pre class="text-primary">{{ $tabla->cuenta_destino }}</pre>
+                                    <pre class="text-primary">{{ $tabla->transaction_id_binance }}</pre>
                                 </td>
                                 <td>
                                     <pre
-                                        class="text-primary">$ {{ $tabla->monto }} {{ strtoupper($tabla->moneda) }}</pre>
+                                        class="text-primary">$ {{ $tabla->monto_binance }} {{ $tabla->moneda }}</pre>
                                 </td>
                                 <td>
-                                    @if ($tabla->acreditado)
+                                    @if ($tabla->status=='aprobado')
                                     <span
                                         class="px-2 border rounded badge border-success text-success pt-1 pb-1 fs-12px d-inline-flex align-items-center">
                                         <i class="fa fa-circle fs-9px fa-fw me-1"></i> Success
                                     </span>
-                                    @else
+                                    @elseif($tabla->status=='declinado')
                                     <span
                                         class="px-2 border rounded badge border-danger text-danger pt-1 pb-1 fs-12px d-inline-flex align-items-center">
                                         <i class="fa fa-circle fs-9px fa-fw me-1"></i> Failed

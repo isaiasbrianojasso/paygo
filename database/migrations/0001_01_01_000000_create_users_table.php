@@ -25,9 +25,10 @@ return new class extends Migration
             $table->date( 'fecha_final')->nullable();
             $table->string('api_key')->unique()->nullable();
             $table->string( 'api_token')->unique()->nullable();
-            $table->string( 'binance_address')->unique()->nullable();
-            $table->string( 'BINANCE_API_KEY')->unique()->nullable();
-            $table->string( 'BINANCE_SECRET_KEY')->unique()->nullable();
+            $table->integer('reputacion')->nullable()->value(null);
+            $table->string( 'binance_address')->unique()->nullable();//binance_id
+            $table->string( 'BINANCE_API_KEY')->unique()->nullable();//binance api
+            $table->string( 'BINANCE_SECRET_KEY')->unique()->nullable();//binance secret
             $table->timestamp('email_verified_at')->nullable();
             $table->string( 'password');
             $table->rememberToken();

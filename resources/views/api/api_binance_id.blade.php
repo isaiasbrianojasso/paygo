@@ -38,7 +38,7 @@
                 let resultadoSimulado = "";
 
 
-                const fullUrl = `${baseUrl}/binance_id?api_key=${apiToken}&orderId=1234567890&note=Test%20Transaction`;
+                const fullUrl = `${baseUrl}/binance_id?api_key=${apiToken}&orderId=1234567890&note=Test%20Transaction&servicio=agregar_1234_creditos`;
                 const codeExample = `
 $url = "${fullUrl}";
 $curl = curl_init($url);

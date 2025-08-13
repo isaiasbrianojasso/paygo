@@ -9,20 +9,29 @@ class transaccion extends Model
     protected $table = 'transaccions';
 
     protected $fillable = [
-        'user_id',
+    'transaccion_id',
+        'monto_binance',
+        'monto_usuario',
+        'respuesta_binance',
         'status',
-        'monto',
-        'cuenta_origen',
-        'cuenta_destino',
+        'cuenta_binance_origen',
+        'cuenta_binance_destino',
         'acreditado',
-        'token_auth',
-        'captura',
-        'moneda',
+        'captura_imagen',
+        'id_transaccion',
+        'user_id',
+        'tipo',
+        'referencia',
+        'descripcion',
+        'identifier',
+        'servicio',
+        'banco',
+        'token_auth'
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function detalleTransacciones()

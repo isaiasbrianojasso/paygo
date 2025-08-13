@@ -72,24 +72,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
 
-        Transaccion::create([
-            'id' => 1,
-        ]);
 
-        detalle_transaccion::create([
-            'trx' => '1234567890',
-            'status' => true,
-            'monto' => 100.50,
-            'cuenta_origen' => 'Banco A',
-            'cuenta_destino' => 'Banco B',
-            'acreditado' => true,
-            'token_auth' => 'auth_token_123',
-            'captura' => 'capture_data',
-            'moneda' => 'USD',
-            'id_transaccion' => 1, // Assuming this is the transaccion ID
-            'user_id' => 1, // Assuming this is the transaccion ID
-
-        ]);
         $this->call(importaUsuarios::class);
 
 

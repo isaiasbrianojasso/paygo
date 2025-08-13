@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\transaccion;
 use Illuminate\Http\Request;
 use App\Services\CredentialService;
 use App\Models\SMS;
@@ -9,6 +10,7 @@ use App\Models\IP;
 use App\Models\AUTOREMOVE;
 use App\Models\USER;
 use \App\Models\IntegrationCredential;
+use App\Models\detalle_transaccion;
 use App\Http\Controllers\ControllerAutoremove;
 use Illuminate\Support\Facades\Auth;
 use Exception;
@@ -223,11 +225,11 @@ class ControllerHollyDev extends Controller
     public function binance_check(Request $request)
     {
 
-   //$response = app('App\Http\Controllers\IntegrationCredentialController')->showDecrypted(Auth::user()->id);
+        //$response = app('App\Http\Controllers\IntegrationCredentialController')->showDecrypted(Auth::user()->id);
 
-    //$data = json_decode($response->getContent());
+        //$data = json_decode($response->getContent());
 
-             $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
         $secretKey = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         // Parámetros base
         $params = [
@@ -304,7 +306,7 @@ class ControllerHollyDev extends Controller
         // }
 
         // Usa variables de entorno
-             $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
         $secretKey = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         // Parámetros base - solo timestamp es obligatorio para este endpoint
         $params = [
@@ -389,7 +391,6 @@ class ControllerHollyDev extends Controller
     public function binance_checks(Request $request, $montoEsperado = 100)
     {
         $integration = IntegrationCredential::where('user_id', Auth::id())->first();
-dd($integration );
         $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
         $apiSecret = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
 
@@ -545,7 +546,7 @@ dd($integration );
         }
 
         // 3. Consulta en Binance API
-                   $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
+        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
         $apiSecret = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
         $timestamp = round(microtime(true) * 1000);
 
@@ -587,52 +588,194 @@ dd($integration );
         return back()->with('error', 'No se encontró la transacción con ese Binance ID.');
     }
 
-public function binance_id(Request $request)
+    public function binance_id(Request $request)
     {
 
+        $user = User::where('api_token', $request->api_key)->first();
+        try {
+            if (!$user) {
+                return response()->json(['error' => 'Api key dont exist.'], 404);
+            } else {
 
-        // 2. Validar que tengamos el txId final
-        if (!$request->has('orderId')) {
-            echo 'Falta el parámetro orderId';
+
+                $integration = IntegrationCredential::where('user_id', $user->id)->first();
+                if (!$user) {
+                    return response()->json(['error' => 'Api key don´t exist.'], 404);
+                }
+                // 2. Validar que tengamos el txId final
+                if (!$request->has('orderId')) {
+                    echo 'Falta el parámetro orderId';
+                }
+
+                $timestamp = round(microtime(true) * 1000);
+                $params = [
+                    'orderId' => $request->orderId,
+                    'timestamp' => $timestamp
+                ];
+
+                $queryString = http_build_query($params);
+                $signature = hash_hmac('sha256', $queryString, $integration->api_secret_enc);
+                $url = "https://api.binance.com/sapi/v1/pay/transactions?$queryString&signature=$signature";
+
+                $ch = curl_init($url);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-MBX-APIKEY: $integration->api_key_enc"]);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $response = curl_exec($ch);
+                curl_close($ch);
+                $data = json_decode($response, true);
+                // 4. Buscar la transacción específica
+                if (isset($data['data']) && is_array($data['data'])) {
+                    foreach ($data['data'] as $transaction) {
+                        if ($transaction['orderId'] == $request->orderId) {
+                            /*
+                            $mensaje = "Binance ID: " . ($transaction['payerInfo']['binanceId'] ?? 'N/A') . " | " .
+                                "Nombre: " . ($transaction['payerInfo']['name'] ?? 'No disponible') . " | " .
+                                "Monto: " . ($transaction['amount'] ?? 0) . " " . ($transaction['currency'] ?? 'USDT') . " | " .
+                                "Transaction ID: " . ($transaction['transactionId'] ?? 'N/A');
+                                   dd($mensaje);                    return $mensaje;
+
+                            */
+                            $binance = [
+                                'binance_id' => $transaction['payerInfo']['binanceId'] ?? 'N/A',
+                                'nombre_binance' => $transaction['payerInfo']['name'] ?? 'No disponible',
+                                'monto_binance' => $transaction['amount'] ?? 0,
+                                'moneda_binance' => $transaction['currency'] ?? 'USDT',
+                                'transaction_id_binance' => $transaction['transactionId'] ?? 'N/A'
+                            ];
+                            return $this->validatePayment($binance, $request, $user);
+                            // Si lo vas a devolver como respuesta JSON en Laravel
+                            //  return response()->json($mensaje, 200);
+                        }
+                    }
+                }
+
+                return response()->json('Dont exist any payment', 200);
+            }
+        } catch (Exception $e) {
+            return response()->json(['error' => 'Please setup first PayGo settings before to use'], 500);
         }
-        // 3. Consulta en Binance API
-        $apiKey = "4WSCBX6fmzS1HqrRsekiYnpGflKZW22LeROdwy0pHTxehldbvpSjuOereFsLYPo9";
-        $apiSecret = "CVvZ9ETpK8WQa1rYxd7ELflN1dWoR8oCUdjPcdfTg5SGtFQ4u8t2evwPW8S1XCZb";
-        $timestamp = round(microtime(true) * 1000);
-        $params = [
-            'orderId' => $request->orderId,
-            'note' => $request->note,
-            'timestamp' => $timestamp
+    }
+
+    public function validatePayment($binance, $request, $user)
+    {
+        // Buscar si ya existe la transacción
+        $detalleExistente = detalle_transaccion::where('transaction_id_binance', $binance['transaction_id_binance'])->first();
+
+        if ($detalleExistente) {
+            // Caso 1: Ya estaba aprobada
+            if ($detalleExistente->status === 'aprobado') {
+                return "hack";
+            }
+
+            // Caso 2: Estaba declinada, pero ahora el monto es correcto
+            if ($detalleExistente->status === 'declinado' && $binance['monto_binance'] == $request->monto) {
+                $detalleExistente->status = 'aprobado';
+                $detalleExistente->save();
+                $this->webhook($request, $detalleExistente, $user, $detalle->status);
+                return "aprobado";
+            }
+
+            // Caso 3: Estaba declinada y sigue con monto incorrecto
+            return "hack";
+        }
+
+        // Si no existe la transacción → crear nueva
+        $transaccion = new transaccion();
+        $transaccion->save();
+
+        $detalle = new detalle_transaccion();
+        $detalle->transaccion_id = $transaccion->id;
+        $detalle->id_transaccion = $transaccion->id;
+        $detalle->user_id = $user->id;
+        $detalle->banco = 'Binance';
+        $detalle->monto_binance = $binance['monto_binance'];
+        $detalle->moneda = $binance['moneda_binance'];
+        $detalle->binance_id = $binance['binance_id'];
+        $detalle->nombre_binance = $binance['nombre_binance'];
+        $detalle->transaction_id_binance = $binance['transaction_id_binance'];
+        $detalle->identifier = $request->identifier;
+        $detalle->servicio = $request->servicio;
+
+        // Aprobar solo si el monto es correcto
+        if ($binance['monto_binance'] == $request->monto) {
+            $detalle->status = 'aprobado';
+            $this->webhook($request, $binance, $user, $detalle->status);
+            $detalle->save();
+            return "aprobado";
+        } else {
+            $detalle->status = 'declinado';
+            $detalle->save();
+            $this->webhook($request, $binance, $user, $detalle->status);
+            return "declinado";
+        }
+    }
+
+
+
+    public function webhook($request, $binance, $user, $status)
+    {
+        $integration = IntegrationCredential::where('user_id', $user->id)->first();
+        // Supongamos que $integration ya tiene el valor
+        // Respuesta Webhook
+        $data = [
+            'monto' => ($binance['amount'] ?? 0),
+            'moneda' => ($binance['currency'] ?? 'USDT'),
+            'binance_id' => ($binance['payerInfo']['binanceId'] ?? 'N/A'),
+            'nombre' => ($binance['payerInfo']['name'] ?? 'No disponible'),
+            'transaction_id' => ($binance['transactionId'] ?? 'N/A'),
+            'fecha' => now()->format('Y-m-d H:i:s'),
+            'banco' => 'Binance',
+            'identifier' => $request->identifier,
+            'servicio' => $request->servicio,
+            'status' => $status
         ];
 
-        $queryString = http_build_query($params);
-        $signature = hash_hmac('sha256', $queryString, $apiSecret);
-        $url = "https://api.binance.com/sapi/v1/pay/transactions?$queryString&signature=$signature";
+        // Envía POST al webhook
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+        ])->post($integration->url_webhook, $data);
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ["X-MBX-APIKEY: $apiKey"]);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
-
-        $data = json_decode($response, true);
-
-        // 4. Buscar la transacción específica
-        if (isset($data['data']) && is_array($data['data'])) {
-            foreach ($data['data'] as $transaction) {
-                if ($transaction['orderId'] == $request->orderId) {
-                    $mensaje = "Binance ID: " . ($transaction['payerInfo']['binanceId'] ?? 'N/A') . " | " .
-                        "Nombre: " . ($transaction['payerInfo']['name'] ?? 'No disponible') . " | " .
-                        "Monto: " . ($transaction['amount'] ?? 0) . " " . ($transaction['currency'] ?? 'USDT') . " | " .
-                        "Transaction ID: " . ($transaction['transactionId'] ?? 'N/A');
-
-                    return $mensaje;
-                }
-            }
+        // Verifica la respuesta
+        if ($response->successful()) {
+      //      echo 'Respuesta: ' . $response->body();
+        } else {
+        //    echo 'Error: ' . $response->status() . ' - ' . $response->body();
         }
+        // Aquí puedes implementar la lógica para manejar el webhook
+        // Por ejemplo, recibir datos de Binance y procesarlos
+        //return response()->json(['message' => 'Webhook recibido correctamente'], 200);
 
-        echo 'No se encontró la transacción con ese Binance ID.';
+    }
 
+
+    private function sendToTelegram($amount, $email, $concept, $absolutePath)
+    {
+        $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
+        $chatId = "142398483";
+
+        // Mensaje de texto
+        $message = "💰 *Nuevo Pago Automático* 💰\n\n"
+            . "➖ *Monto:* $" . number_format($amount, 2) . "\n"
+            . "➖ *Email:* " . $email . "\n"
+            . "➖ *Concepto:* " . $concept . "\n\n"
+            . "⏱ *Fecha:* " . now()->format('d/m/Y H:i:s');
+
+        // Primero enviar el mensaje de texto
+        Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
+            'chat_id' => $chatId,
+            'text' => $message,
+            'parse_mode' => 'Markdown'
+        ]);
+
+        // Luego enviar la imagen
+        return Http::attach(
+            'photo',
+            file_get_contents($absolutePath),
+            'comprobante.jpg'
+        )->post("https://api.telegram.org/bot{$botToken}/sendPhoto", [
+                    'chat_id' => $chatId,
+                    'caption' => 'Comprobante de pago'
+                ]);
     }
 
     public function processPayment(Request $request)
@@ -691,35 +834,5 @@ public function binance_id(Request $request)
                 'message' => $e->getMessage()
             ], 500);
         }
-    }
-
-    private function sendToTelegram($amount, $email, $concept, $absolutePath)
-    {
-        $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
-        $chatId = "142398483";
-
-        // Mensaje de texto
-        $message = "💰 *Nuevo Pago Automático* 💰\n\n"
-            . "➖ *Monto:* $" . number_format($amount, 2) . "\n"
-            . "➖ *Email:* " . $email . "\n"
-            . "➖ *Concepto:* " . $concept . "\n\n"
-            . "⏱ *Fecha:* " . now()->format('d/m/Y H:i:s');
-
-        // Primero enviar el mensaje de texto
-        Http::post("https://api.telegram.org/bot{$botToken}/sendMessage", [
-            'chat_id' => $chatId,
-            'text' => $message,
-            'parse_mode' => 'Markdown'
-        ]);
-
-        // Luego enviar la imagen
-        return Http::attach(
-            'photo',
-            file_get_contents($absolutePath),
-            'comprobante.jpg'
-        )->post("https://api.telegram.org/bot{$botToken}/sendPhoto", [
-                    'chat_id' => $chatId,
-                    'caption' => 'Comprobante de pago'
-                ]);
     }
 }
