@@ -26,6 +26,7 @@ return new class extends Migration {
             $table->boolean('acreditado')->nullable();//indica si ya se canjeo el pago
             $table->string('captura_imagen')->nullable();
             $table->string('moneda')->nullable(); // Expiration time for the token
+            $table->string('hash_imagen', 64)->nullable(); // Hash único de la imagen (SHA-256)
 
             $table->string('banco')->nullable(); // Expiration time for the token
             $table->string(column: 'identifier')->nullable(); // Expiration time for the token

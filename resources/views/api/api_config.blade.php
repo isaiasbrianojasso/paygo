@@ -73,7 +73,8 @@
 
             <form id="integrationForm"
                   action="{{ $isEdit ? route('integration-credentials.update', $credential->id) : url('/integration-credentials') }}"
-                  method="POST">
+                  method="POST"
+                  enctype="multipart/form-data">
                 @csrf
                 @if($isEdit) @method('PUT') @endif
                 <input type="hidden" name="user_id" value="{{ Auth::id() }}">
@@ -89,6 +90,17 @@
                                 value="{{ old('chat_id', $chat_id ?? '') }}"
                                 placeholder="Ingresa tu Chat ID" required>
                             @error('chat_id')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                        </div>
+
+                        <!-- Upload QR -->
+                        <div class="mb-3 file-upload-area text-center p-5">
+                            <label for="qr_payment" class="form-label fw-semibold mb-2"><i class="fab fa-binance me-1"></i> Your QR Payment Binance</label><br>
+                            <input type="file" class="d-none" id="qr" name="qr" accept="image/*" required>
+                            <label for="qr" class="mb-3 btn btn-outline-primary">
+                                <i class="bi bi-cloud-arrow-up"></i> Seleccionar archivo
+                            </label>
+                            <p class="small text-muted">Formatos aceptados: JPG, PNG (Máx. 5MB)</p>
+                            <div id="file-name" class="mt-2 small"></div>
                         </div>
 
                         <!-- Webhook URL -->

@@ -702,7 +702,7 @@ class ControllerHollyDev extends Controller
         $detalle->transaction_id_binance = $binance['transaction_id_binance'];
         $detalle->identifier = $request->identifier;
         $detalle->servicio = $request->servicio;
-
+        $detalle->hash_imagen = hash_file('sha256', $request->screenshot);
         // Aprobar solo si el monto es correcto
         if ($binance['monto_binance'] == $request->monto) {
             $detalle->status = 'aprobado';
@@ -767,18 +767,19 @@ class ControllerHollyDev extends Controller
         $validated = $request->validate([
             'amount' => 'required|numeric',
             'email' => 'required|email',
-            'concept' => 'nullable|string',
-            'api_key' => 'nullable|string',
+            'concept' => 'string',
+            'api_key' => 'string',
             'screenshot' => 'required|image|max:5120', // Máx 5MB
         ]);
 
         $apiKey = $request->input(key: 'api_key');
 
-        $user = User::where('api_token', $apiKey)->first(); ;
+        $user = User::where('api_token', $apiKey)->first();
+        ;
 
         $request->orderId = $validated['concept'];
         $request->monto = $validated['amount'];
-
+        $request->screenshot = $validated['screenshot'];
         $resp = $this->binance_id($request);
 
         try {
@@ -852,14 +853,14 @@ class ControllerHollyDev extends Controller
         }
     }
 
-    private function sendToTelegram($amount, $email, $concept, $absolutePath, $resp,$user)
+    private function sendToTelegram($amount, $email, $concept, $absolutePath, $resp, $user)
     {
-     //   $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
-       // $chatId = "142398483";
+        //   $botToken = "7285546131:AAGkupLGAY7ODqVol3K4tFRaetSbeyZcoZA";
+        // $chatId = "142398483";
 
         $integration = IntegrationCredential::where('user_id', $user->id)->first();
         $botToken = $integration->token_telegram;
-        $chatId =  $integration->chat_id;
+        $chatId = $integration->chat_id;
 
         // Verificar si el botToken y chatId están configurados
         if (!$botToken || !$chatId) {

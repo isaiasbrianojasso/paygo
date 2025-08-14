@@ -14,6 +14,7 @@ use App\Http\Controllers\ControllerAPI;
 use App\Http\Controllers\IntegrationCredentialController;
 use Illuminate\Http\Request;
 use \App\Models\IntegrationCredential;
+use Illuminate\Support\Facades\Storage;
 // Esto registrará todas las rutas necesarias para WebAuthn
 
 
@@ -28,7 +29,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
 
-    Route::get('/test-keys', function() {
+    Route::get('/test-keys', function () {
         return [
             'public_key_loaded' => !empty(config('app.public_key')),
             'private_key_loaded' => !empty(config('app.private_key')),
@@ -97,10 +98,10 @@ Route::middleware([
 
 
     //USUARIOS
-    Route::get('/admin/user/', fn() => view('admin.user')->with('user',User::FindOrFail(base64_decode($_GET['token']))))->name('edit_usuario');
+    Route::get('/admin/user/', fn() => view('admin.user')->with('user', User::FindOrFail(base64_decode($_GET['token']))))->name('edit_usuario');
     Route::post('/users.create', [ControllerSMS::class, '  users.create']);
 
-//qr
+    //qr
     Route::match(['get', 'post'], '/qr', [ControllerAPI::class, 'qr'])->name('qr');
 
     //METODOS
@@ -113,7 +114,7 @@ Route::middleware([
     Route::match(['get', 'post'], '/regenerarCredenciales', [ControllerHollyDev::class, 'regenerarCredenciales']);
 });
 
- Route::match(['get', 'post'],'/validatePay', function (Request $request) {
+Route::match(['get', 'post'], '/validatePay', function (Request $request) {
     // Validate required parameters;
     if (!$request->has('api_key')) {
         return response()->json([
@@ -132,19 +133,93 @@ Route::middleware([
             'message' => 'Invalid API key'
         ], 401);
     }
-  return view('validatePay.pay', [
-    'api_key' => $request->api_key
-]);
+    return view('validatePay.pay', [
+        'api_key' => $request->api_key
+    ]);
 
 });
 
- Route::match(['get', 'post'],'/validatePay/actionPay.php', [ControllerHollyDev::class, 'processPayment'])->name('zeta');
+Route::match(['get', 'post'], '/validatePay/actionPay.php', [ControllerHollyDev::class, 'processPayment'])->name('zeta');
 
 //binance
 Route::match(['get', 'post'], '/binance_check', [ControllerHollyDev::class, 'binance_check'])->name('binance_check');
 Route::match(['get', 'post'], '/binance_id', [ControllerHollyDev::class, 'binance_id'])->name('binance_id');
 
 Route::match(['get', 'post'], '/binance_check_id', [ControllerHollyDev::class, 'binance_check_id'])->name('binance_check_id');
+
+
+
+Route::match(['get', 'post'], '/api_binance_website/{api}', function (Request $request, $api) {
+
+    // Usar el parámetro de la URL como api_key si no viene en POST/GET
+    $apiKey = $request->api_key ?? $api;
+
+    // Validar que exista la api_key
+    if (!$apiKey) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'API key parameter is required'
+        ], 400);
+    }
+
+    // Buscar usuario por API key
+    $user = User::where('api_token', $apiKey)->first();
+    $integration = IntegrationCredential::where('user_id', $user->id)->first();
+    $qr = Storage::url($integration->qr);
+    if (!$user) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Invalid API key'
+        ], 401);
+    }
+
+    // Retornar la vista con el api_key
+    return view('validatePay.website', [
+        'api_key' => $apiKey,
+        'qr' => $qr ?? 'https://via.placeholder.com/220?text=QR+no+disponible'
+
+    ]);
+});
+
+
+
+Route::get('/descargar-index', function () {
+    // 1) Usuario logueado
+    $user = Auth::user();
+    if (!$user) {
+        abort(403, 'Usuario no autenticado');
+    }
+
+    // 2) api_key y webhook
+    $apiKey  = $user->api_token;
+    $webhook = IntegrationCredential::where('user_id', $user->id)->first();
+
+    // 3) Validaciones
+    if (!$webhook || !$webhook->url_webhook) {
+        abort(404, 'URL de webhook no encontrada');
+    }
+
+    // 4) Obtener SOLO el origen (scheme + host [+ port]), sin parámetros ni path
+    $p      = parse_url($webhook->url_webhook);
+    $scheme = $p['scheme'] ?? 'https';
+    $host   = $p['host']   ?? '';
+    $port   = isset($p['port']) ? ':' . $p['port'] : '';
+    if ($host === '') {
+        abort(422, 'URL de webhook inválida');
+    }
+    $url = rtrim("$scheme://$host$port", '/'); // <-- AHORA $url EXISTE
+
+    // 5) Contenido del archivo
+    $contenido = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0">'
+        . '<iframe src="' . $url . '/validatePay/?api_key=' . e($apiKey) . '" width="100%" height="100%" frameborder="0" style="border:0;width:100vw;height:100vh"></iframe>'
+        . '</body></html>';
+
+    // 6) Guardar y descargar
+    $path = storage_path('app/index.php');
+    file_put_contents($path, $contenido);
+
+    return response()->download($path, 'index.php')->deleteFileAfterSend(true);
+});
 
 
 Route::match(['get', 'post'], '/binance_pay', [ControllerHollyDev::class, 'binance_pay'])->name('binance_pay');
@@ -159,6 +234,7 @@ Route::post('/passkey/register', function (AttestationRequest $request) {
 })->name('passkey.register');
 
 Route::post('/passkey/verify', function (AttestationRequest $request) {
-   return $request->login(Auth::all());
+    return $request->login(Auth::all());
 })->name('passkey.verify');
+
 

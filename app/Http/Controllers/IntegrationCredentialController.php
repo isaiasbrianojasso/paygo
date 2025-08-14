@@ -15,9 +15,20 @@ class IntegrationCredentialController extends Controller
             'url_webhook'    => 'required|string|max:2048|url',
             'chat_id'        => 'required|string|max:128',
             'token_telegram' => 'nullable|string|max:2048',
+            'qr' => 'nullable',
             'api_key'        => 'nullable|string|min:16',
             'api_secret'     => 'nullable|string|min:16',
         ]);
+
+        $image = $request->file('qr');
+            $imageName = 'temp_' . time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('temp', $imageName, 'public');
+
+
+            // Obtener la ruta absoluta de la imagen
+            $absolutePath = storage_path('app/public/' . $imagePath);
+
+
 
         // Prevenir duplicado de API key por usuario
         if (!empty($data['api_key']) &&
@@ -34,6 +45,7 @@ class IntegrationCredentialController extends Controller
             $data['url_webhook'],
             $data['token_telegram'] ?? null,
             $data['chat_id'],
+            $absolutePath, // Guardar la ruta de la imagen en lugar del contenido
             $data['api_key'] ?? null,
             $data['api_secret'] ?? null
         );
@@ -53,11 +65,13 @@ class IntegrationCredentialController extends Controller
     {
         $user = auth()->user();
         $credential = $user->integrationCredential;
+
         return view('api.api_config', [
             'credential'     => $credential,
             'chat_id'        => $credential->chat_id ?? '',
             'url_webhook'    => $credential->url_webhook ?? '',
             'token_telegram' => $credential->token_telegram ?? '',
+            'qr' => $credential->qr ?? '',
             'api_key'        => $credential->api_key ?? '',
             'api_secret'     => $credential->api_secret ?? '',
         ]);
@@ -71,8 +85,18 @@ class IntegrationCredentialController extends Controller
             'token_telegram' => 'nullable|string|max:2048',
             'chat_id'        => 'nullable|string|max:128',
             'api_key'        => 'nullable|string|min:16',
+            'qr'        => 'nullable',
             'api_secret'     => 'nullable|string|min:16',
         ]);
+
+        $image = $request->file('qr');
+            $imageName = 'temp_' . time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('temp', $imageName, 'public');
+
+
+            // Obtener la ruta absoluta de la imagen
+            $absolutePath = storage_path('app/public/' . $imagePath);
+
 
         $credential = IntegrationCredential::where('id', $id)
             ->where('user_id', $data['user_id'])
@@ -83,6 +107,8 @@ class IntegrationCredentialController extends Controller
             $data['url_webhook'],
             $data['token_telegram'] ?? null,
             $data['chat_id'],
+                        $absolutePath, // Guardar la ruta de la imagen en lugar del contenido
+
             $data['api_key'] ?: null,
             $data['api_secret'] ?: null
         );
@@ -101,6 +127,8 @@ class IntegrationCredentialController extends Controller
             'url_webhook'   => $cred->url_webhook,
             'token_telegram'=> $cred->token_telegram,
             'chat_id'       => $cred->chat_id,
+            'qr'       => $cred->qr,
+
             'api_key'       => $cred->getDecryptedApiKey(),
             'api_secret'    => $cred->getDecryptedApiSecret(),
             'last4'         => $cred->last4,

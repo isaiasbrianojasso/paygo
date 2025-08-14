@@ -65,6 +65,7 @@ class CredentialService
      * @param int|string $id
      * @param string $urlWebhook
      * @param string $chatId
+     * @param string $qr
      * @param string|null $token_telegram If null or empty, the existing value will be preserved
      * @param string|null $apiKey If null or empty, the existing value will be preserved
      * @param string|null $apiSecret If null or empty, the existing value will be preserved
@@ -75,6 +76,7 @@ class CredentialService
         string $urlWebhook,
         string $token_telegram,
         string $chatId,
+        string $qr,
         ?string $apiKey,
         ?string $apiSecret
     ): IntegrationCredential {
@@ -83,6 +85,7 @@ class CredentialService
         // Always update these fields
         $credential->url_webhook = $urlWebhook;
         $credential->chat_id = $chatId;
+         $credential->qr = $qr;
         $credential->token_telegram = $token_telegram;
         // Only update API key if a new one is provided
         if ($apiKey !== null && $apiKey !== '') {

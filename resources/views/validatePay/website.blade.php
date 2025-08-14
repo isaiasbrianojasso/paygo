@@ -1,12 +1,19 @@
+@include('layouts.header')
+@php $total=0; @endphp
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
+<div class="container py-5 position-relative">
 
+    <!-- Botón descargar en esquina superior derecha -->
+    <div class="position-absolute top-0 end-0 mt-3 me-3">
+        <a href="/descargar-index" class="btn btn-primary-custom d-flex align-items-center gap-2">
+            <i class="bi bi-download"></i> Descargar formulario
+        </a>
+    </div>
 
-<div class="container py-5">
     <div class="row justify-content-center">
-
         <div class="col-md-8">
 
             <!-- Título -->
@@ -43,10 +50,12 @@
                         <div class="mb-4 text-center">
                             <h5 class="mb-3 fw-bold">Escanea el código QR</h5>
                             <p class="text-muted">Usa la aplicación de tu banco o billetera digital</p>
-                            <div class="qr-container">
-                                <img  src="{{$qr}}" alt="{{$qr}}"  style="width: 220px; height: 220px;"
-                                    onerror="this.onerror=null;this.src='https://via.placeholder.com/220?text=QR+no+disponible';">
-                            </div>
+                          <div class="qr-container">
+    <img src="{{ asset( basename($qr)) }}" alt="QR Code"
+         style="width: 220px; height: 220px;"
+         onerror="this.onerror=null;this.src='https://via.placeholder.com/220?text=QR+no+disponible';">
+</div>
+
 
                             <div class="p-3 mt-4 rounded" style="background-color: #f8f9fa;">
                                 <div class="mb-3">
@@ -90,7 +99,6 @@
                             </button>
                         </div>
                     </div>
-
 
                     <!-- Paso 3: Subir comprobante -->
                     <div class="payment-step d-none" id="step3">
@@ -374,3 +382,5 @@
     });
 });
 </script>
+
+@include('layouts.footer')
