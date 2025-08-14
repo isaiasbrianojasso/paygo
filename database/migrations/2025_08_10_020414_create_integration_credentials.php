@@ -19,8 +19,8 @@ return new class extends Migration
             // Datos requeridos
             $table->string('url_webhook', 2048)->nullable();
             $table->string('chat_id', 128)->nullable();
-            $table->string('token_telegram', 128)->nullable();
-            $table->string('qr', 128)->nullable();
+            // $table->string('token_telegram', 128)->nullable();
+            // $table->string('qr', 128)->nullable();
 
             // API key/secret opcionales
             $table->string('api_key_hash', 255)->nullable();
