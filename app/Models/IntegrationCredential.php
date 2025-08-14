@@ -13,10 +13,10 @@ class IntegrationCredential extends Model
 
     protected $fillable = [
         'user_id',
-        'url_webhook', 'chat_id',
+        'url_webhook', 'chat_id', 'token_telegram',
         'api_key_hash', 'api_key_sha256',
         'api_key_enc', 'api_secret_enc',
-        'key_version', 'last4',
+        'key_version', 'last4', 'qr',
     ];
 
     protected $casts = [

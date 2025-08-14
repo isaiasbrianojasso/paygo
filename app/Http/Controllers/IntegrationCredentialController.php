@@ -90,13 +90,17 @@ class IntegrationCredentialController extends Controller
         ]);
 
         $image = $request->file('qr');
-            $imageName = 'temp_' . time() . '.' . $image->getClientOriginalExtension();
-            $imagePath = $image->storeAs('temp', $imageName, 'public');
-
-
-            // Obtener la ruta absoluta de la imagen
-            $absolutePath = storage_path('app/public/' . $imagePath);
-
+        if ($image) {
+            // Guardar la imagen en storage/app/public/qr_codes
+            $imageName = 'qr_' . time() . '.' . $image->getClientOriginalExtension();
+            $imagePath = $image->storeAs('qr_codes', $imageName, 'public');
+            
+            // Usar solo el path relativo para la base de datos
+            $qrPath = 'storage/' . $imagePath;
+        } else {
+            // Si no se subió una nueva imagen, mantener la existente
+            $qrPath = $credential->qr ?? null;
+        }
 
         $credential = IntegrationCredential::where('id', $id)
             ->where('user_id', $data['user_id'])
@@ -107,8 +111,7 @@ class IntegrationCredentialController extends Controller
             $data['url_webhook'],
             $data['token_telegram'] ?? null,
             $data['chat_id'],
-                        $absolutePath, // Guardar la ruta de la imagen en lugar del contenido
-
+            $qrPath, // Usar el path relativo para la base de datos
             $data['api_key'] ?: null,
             $data['api_secret'] ?: null
         );

@@ -50,10 +50,9 @@
                         <div class="mb-4 text-center">
                             <h5 class="mb-3 fw-bold">Escanea el código QR</h5>
                             <p class="text-muted">Usa la aplicación de tu banco o billetera digital</p>
-                          <div class="qr-container">
-    <img src="{{ asset( basename($qr)) }}" alt="QR Code"
-         style="width: 220px; height: 220px;"
-         onerror="this.onerror=null;this.src='https://via.placeholder.com/220?text=QR+no+disponible';">
+                          <div class="qr-container text-center">
+    <img src="{{ asset($qr) }}" alt="QR Code"
+         style="max-width: 220px; max-height: 220px; width: auto; height: auto;">
 </div>
 
 
@@ -81,9 +80,9 @@
 
                     <!-- Paso 2: Datos del pago -->
                     <div class="payment-step d-none" id="step2">
-                        <div class="qr-container">
-                            <img src="/assets/img/valid_binance.jpeg" alt="QR de pago" style="width: 50%; height: 50%;"
-                                onerror="this.onerror=null;this.src='https://via.placeholder.com/220?text=QR+no+disponible';">
+                        <div class="qr-container text-center">
+                            <img src="{{ $qr }}" alt="QR de pago" style="max-width: 50%; height: auto;"
+                                onerror="this.onerror=null;">
                         </div>
                         <div class="mb-4">
                             <label class="form-label fw-bold">Orden ID (ID de pago en la captura de pantalla)</label>

@@ -85,7 +85,12 @@ class CredentialService
         // Always update these fields
         $credential->url_webhook = $urlWebhook;
         $credential->chat_id = $chatId;
-         $credential->qr = $qr;
+        
+        // Only update QR if a new one is provided
+        if ($qr !== null) {
+            $credential->qr = $qr;
+        }
+        
         $credential->token_telegram = $token_telegram;
         // Only update API key if a new one is provided
         if ($apiKey !== null && $apiKey !== '') {

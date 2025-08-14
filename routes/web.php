@@ -164,20 +164,23 @@ Route::match(['get', 'post'], '/api_binance_website/{api}', function (Request $r
 
     // Buscar usuario por API key
     $user = User::where('api_token', $apiKey)->first();
-    $integration = IntegrationCredential::where('user_id', $user->id)->first();
-    $qr = Storage::url($integration->qr);
+    
     if (!$user) {
         return response()->json([
             'status' => 'error',
             'message' => 'Invalid API key'
         ], 401);
     }
+    
+    $integration = IntegrationCredential::where('user_id', $user->id)->first();
+    
+    // Get the QR path if it exists
+    $qr = $integration->qr ?? null;
 
     // Retornar la vista con el api_key
     return view('validatePay.website', [
         'api_key' => $apiKey,
-        'qr' => $qr ?? 'https://via.placeholder.com/220?text=QR+no+disponible'
-
+        'qr' => $qr ?? 'https://www.shutterstock.com/shutterstock/photos/2253338321/display_1500/stock-vector-qr-code-not-available-icon-quick-responce-matrix-barcode-in-red-forbidden-sign-isolated-on-white-2253338321.jpg'
     ]);
 });
 
